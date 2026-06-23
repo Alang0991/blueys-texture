@@ -11,7 +11,8 @@
 
 Custom VRChat and Unity texture shaders with emission support, glow effects, and custom material inspectors.
 
-> Currently intended for **PC Only**. Quest support is not available at this time.
+> Currently intended for **PC Only**.
+
 
 ---
 
