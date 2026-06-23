@@ -2,9 +2,7 @@
   "name": "Blueys Repo",
   "id": "com.blueys.repo",
   "url": "https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json",
-  "author": {
-    "name": "Blueys"
-  },
+  "author": "Blueys",
   "packages": {
     "com.blueys.texture": {
       "versions": {
