@@ -1,0 +1,11 @@
+{
+  "name": "com.blueys.texture",
+  "displayName": "Blueys Texture",
+  "version": "1.0.0",
+  "description": "Blueys texture shaders and custom inspectors for Unity/VRChat.",
+  "unity": "2022.3",
+  "author": {
+    "name": "Blueys"
+  },
+  "vpmDependencies": {}
+}
