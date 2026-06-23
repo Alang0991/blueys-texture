@@ -27,11 +27,11 @@ https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
 
 ### Install Through VCC
 
-1. Open **VRChat Creator Companion**
+1. Open VRChat Creator Companion
 2. Open your project
-3. Click **Manage Project**
-4. Open **Packages**
-5. Install **Blueys Texture**
+3. Click Manage Project
+4. Open Packages
+5. Install Blueys Texture
 
 ---
 
@@ -112,13 +112,3 @@ https://github.com/Alang0991/blueys-texture
 **Blueys**
 
 Created for VRChat creators looking for simple but powerful texture shaders.
-
----
-
-## Support
-
-If you find a bug or have a feature request, please create an issue on GitHub.
-
-GitHub Issues:
-
-https://github.com/Alang0991/blueys-texture/issues
