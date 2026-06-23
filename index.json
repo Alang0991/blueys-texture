@@ -1,0 +1,22 @@
+{
+  "name": "Blueys Repo",
+  "id": "com.blueys.repo",
+  "url": "https://github.com/Alang0991/bluey-vcc",
+  "author": {
+    "name": "Blueys"
+  },
+  "packages": {
+    "com.blueys.texture": {
+      "versions": {
+        "1.0.0": {
+          "name": "com.blueys.texture",
+          "displayName": "Blueys Texture",
+          "version": "1.0.0",
+          "unity": "2022.3",
+          "description": "Blueys texture shaders and custom inspectors for Unity/VRChat.",
+          "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.0.0/com.blueys.texture-1.0.0.zip"
+        }
+      }
+    }
+  }
+}
