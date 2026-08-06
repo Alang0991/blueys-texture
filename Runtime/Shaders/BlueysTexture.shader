@@ -352,16 +352,16 @@ Shader "Blueys/BlueysTexture"
             #endif
 
             o.Albedo = saturate(col);
-            o.Specular = fixed3(_SpecularStrength, _SpecularStrength, _SpecularStrength);
 
             #if _USE_WET_SHINE
                 half metallic = tex2D(_MetallicMap, IN.uv_MetallicMap).r * _MetallicStrength;
                 half smoothness = tex2D(_SmoothnessMap, IN.uv_SmoothnessMap).r * _SmoothnessStrength;
-                o.Metallic = metallic;
-                o.Smoothness = lerp(_Smoothness, smoothness, _SmoothnessStrength);
+                half finalSmoothness = lerp(_Smoothness, smoothness, _SmoothnessStrength);
+                o.Specular = fixed3(metallic, metallic, metallic);
+                o.Specular.a = finalSmoothness;
             #else
-                o.Metallic = 0.0;
-                o.Smoothness = 0.5;
+                o.Specular = fixed3(_SpecularStrength, _SpecularStrength, _SpecularStrength);
+                o.Specular.a = 0.5;
             #endif
 
             #if _USE_OCCLUSION
