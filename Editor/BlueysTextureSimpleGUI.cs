@@ -29,6 +29,46 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
     static Dictionary<string, bool> sectionStates = new Dictionary<string, bool>();
 
+    static readonly Dictionary<string, object> defaultValues = new Dictionary<string, object>()
+    {
+        { "_Color", new Color(1f, 1f, 1f, 1f) },
+        { "_Brightness", 1f },
+        { "_Contrast", 1f },
+        { "_Saturation", 1f },
+        { "_HueShift", 0f },
+        { "_Gamma", 1f },
+        { "_Vibrance", 0f },
+        { "_Sharpness", 0f },
+        { "_Smoothness", 0.5f },
+        { "_Metallic", 0f },
+        { "_MetallicStrength", 0f },
+        { "_SmoothnessStrength", 0f },
+        { "_UseSolidOverlay", 0f },
+        { "_SolidColor", new Color(1f, 1f, 1f, 1f) },
+        { "_SolidStrength", 0f },
+        { "_UseEmission", 0f },
+        { "_EmissionColor", new Color(0.2f, 0.7f, 1f, 1f) },
+        { "_EmissionStrength", 1f },
+        { "_EmissionUsesPNG", 1f },
+        { "_PulseSpeed", 0f },
+        { "_PulseMin", 0.5f },
+        { "_FlickerSpeed", 0f },
+        { "_FlickerIntensity", 0f },
+        { "_ScrollSpeed", 0f },
+        { "_ScrollDirection", 0f },
+        { "_UseRimGlow", 1f },
+        { "_RimColor", new Color(0.35f, 0.8f, 1f, 1f) },
+        { "_RimPower", 3f },
+        { "_RimStrength", 1f },
+        { "_UseCutout", 0f },
+        { "_AlphaCutoff", 0.05f },
+        { "_UseMatcap", 0f },
+        { "_MatcapStrength", 0f },
+        { "_UseGradient", 0f },
+        { "_GradientStrength", 0f },
+        { "_OcclusionStrength", 1f }
+    };
+
     public override void OnGUI(MaterialEditor editor, MaterialProperty[] props)
     {
         Material mat = editor.target as Material;
@@ -187,7 +227,21 @@ public class BlueysTextureSimpleGUI : ShaderGUI
             }
 
             Texture main = mat.GetTexture("_MainTex");
-            if (main != null && !main.mipmapIsAvailable)
+            bool mainHasMipmaps = false;
+            if (main != null)
+            {
+                string path = AssetDatabase.GetAssetPath(main);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    TextureImporter imp = AssetImporter.GetAtPath(path) as TextureImporter;
+                    if (imp != null)
+                    {
+                        mainHasMipmaps = imp.mipmapEnabled;
+                    }
+                }
+            }
+
+            if (main != null && !mainHasMipmaps)
             {
                 warnings.Add("Mipmaps are disabled on main texture.");
                 fixes.Add("Enable mipmaps in texture import settings.");
@@ -296,8 +350,20 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
                 EditorGUI.indentLevel++;
                 EditorGUILayout.LabelField("Resolution", tex.width + " x " + tex.height);
-                EditorGUILayout.LabelField("Format", tex.graphicsFormat.ToString());
-                EditorGUILayout.LabelField("Mipmaps", tex.mipmapIsAvailable ? "Enabled" : "Disabled");
+                EditorGUILayout.LabelField("Type", tex.GetType().Name);
+
+                string path = AssetDatabase.GetAssetPath(tex);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    TextureImporter imp = AssetImporter.GetAtPath(path) as TextureImporter;
+                    if (imp != null)
+                    {
+                        EditorGUILayout.LabelField("Format", imp.textureCompression.ToString());
+                        EditorGUILayout.LabelField("Mipmaps", imp.mipmapEnabled ? "Enabled" : "Disabled");
+                        EditorGUILayout.LabelField("sRGB", imp.sRGBTexture ? "Yes" : "No");
+                    }
+                }
+
                 EditorGUILayout.LabelField("VRAM", FormatVRAM(tex));
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space(4);
@@ -573,15 +639,18 @@ public class BlueysTextureSimpleGUI : ShaderGUI
             ShaderUtil.ShaderPropertyType type = ShaderUtil.GetPropertyType(shader, i);
             if (type == ShaderUtil.ShaderPropertyType.Color)
             {
-                mat.SetColor(name, ShaderUtil.GetPropertyDefaultValue(shader, i));
+                if (defaultValues.ContainsKey(name) && defaultValues[name] is Color col)
+                    mat.SetColor(name, col);
             }
             else if (type == ShaderUtil.ShaderPropertyType.Float || type == ShaderUtil.ShaderPropertyType.Range)
             {
-                mat.SetFloat(name, ShaderUtil.GetPropertyDefaultValue(shader, i).x);
+                if (defaultValues.ContainsKey(name) && defaultValues[name] is float f)
+                    mat.SetFloat(name, f);
             }
             else if (type == ShaderUtil.ShaderPropertyType.Vector)
             {
-                mat.SetVector(name, ShaderUtil.GetPropertyDefaultValue(shader, i));
+                if (defaultValues.ContainsKey(name) && defaultValues[name] is Vector4 v)
+                    mat.SetVector(name, v);
             }
         }
         EditorUtility.SetDirty(mat);

@@ -239,8 +239,8 @@ Shader "Blueys/BlueysTextureSimple"
             #endif
 
             #if _USE_GRADIENT
-                half grad = tex2D(_GradientTex, IN.uv_MainTex).r;
-                emission += _GradientTex ? _GradientTex.rgb * grad * _GradientStrength : fixed3(0,0,0);
+                fixed3 gradTex = tex2D(_GradientTex, IN.uv_MainTex).rgb;
+                emission += gradTex * gradTex.r * _GradientStrength;
             #endif
 
             o.Albedo = saturate(col);

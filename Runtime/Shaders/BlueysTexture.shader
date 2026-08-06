@@ -328,7 +328,7 @@ Shader "Blueys/BlueysTexture"
 
             #if _USE_REFLECTION
                 half refl = pow(fresnel, _ReflectionPower) * _ReflectionStrength;
-                fixed3 reflTex = _ReflectionMap ? tex2D(_ReflectionMap, IN.uv_ReflectionMap).rgb : fixed3(1,1,1);
+                fixed3 reflTex = tex2D(_ReflectionMap, IN.uv_ReflectionMap).rgb;
                 emission += _ReflectionColor.rgb * refl * lerp(fixed3(1,1,1), reflTex, _ReflectionBlend);
             #endif
 
@@ -338,8 +338,8 @@ Shader "Blueys/BlueysTexture"
             #endif
 
             #if _USE_GRADIENT
-                half grad = tex2D(_GradientTex, IN.uv_MainTex).r;
-                emission += _GradientTex ? _GradientTex.rgb * grad * _GradientStrength : fixed3(0,0,0);
+                fixed3 gradTex = tex2D(_GradientTex, IN.uv_MainTex).rgb;
+                emission += gradTex * gradTex.r * _GradientStrength;
             #endif
 
             #if _USE_DISSOLVE
