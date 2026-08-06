@@ -4,21 +4,24 @@ using System.Collections.Generic;
 
 public class BlueysTextureSimpleGUI : ShaderGUI
 {
-    bool mainOpen = true;
-    bool lookOpen = true;
-    bool overlayOpen = false;
-    bool emissionOpen = true;
-    bool rimOpen = true;
-    bool cutoutOpen = false;
-    bool matcapOpen = false;
-    bool gradientOpen = false;
-    bool renderOpen = false;
+    private int tabIndex = 0;
+    private readonly string[] tabs = { "Main", "Lighting", "Effects", "Rendering", "Optimization", "Presets" };
 
-    string searchQuery = "";
-    Vector2 scrollPos;
-    bool showPerformance = false;
-    bool showValidation = false;
-    bool showTextureInfo = false;
+    private bool mainOpen = true;
+    private bool lookOpen = true;
+    private bool overlayOpen = true;
+    private bool emissionOpen = true;
+    private bool rimOpen = true;
+    private bool cutoutOpen = false;
+    private bool matcapOpen = false;
+    private bool gradientOpen = false;
+    private bool occlusionOpen = false;
+    private bool renderOpen = true;
+    private bool perfOpen = true;
+
+    private Vector2 scrollPos;
+    private bool showValidation = false;
+    private bool showTextureInfo = false;
 
     Material cachedMat;
 
@@ -26,11 +29,13 @@ public class BlueysTextureSimpleGUI : ShaderGUI
     readonly Color headerOff = new Color(0.16f, 0.16f, 0.16f);
     readonly Color headerOn = new Color(0.12f, 0.22f, 0.26f);
     readonly Color body = new Color(0.13f, 0.13f, 0.13f);
-
-    static Dictionary<string, bool> sectionStates = new Dictionary<string, bool>();
+    readonly Color bannerBg = new Color(0.04f, 0.07f, 0.09f);
 
     static readonly Dictionary<string, object> defaultValues = new Dictionary<string, object>()
     {
+        { "_MainTex", null },
+        { "_MainTiling", new Vector4(1,1,0,0) },
+        { "_MainOffset", new Vector4(0,0,0,0) },
         { "_Color", new Color(1f, 1f, 1f, 1f) },
         { "_Brightness", 1f },
         { "_Contrast", 1f },
@@ -41,12 +46,16 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         { "_Sharpness", 0f },
         { "_Smoothness", 0.5f },
         { "_Metallic", 0f },
+        { "_MetallicMap", null },
         { "_MetallicStrength", 0f },
+        { "_SmoothnessMap", null },
         { "_SmoothnessStrength", 0f },
         { "_UseSolidOverlay", 0f },
         { "_SolidColor", new Color(1f, 1f, 1f, 1f) },
         { "_SolidStrength", 0f },
         { "_UseEmission", 0f },
+        { "_EmissionMap", null },
+        { "_EmissionMask", null },
         { "_EmissionColor", new Color(0.2f, 0.7f, 1f, 1f) },
         { "_EmissionStrength", 1f },
         { "_EmissionUsesPNG", 1f },
@@ -63,9 +72,12 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         { "_UseCutout", 0f },
         { "_AlphaCutoff", 0.05f },
         { "_UseMatcap", 0f },
+        { "_MatcapTex", null },
         { "_MatcapStrength", 0f },
         { "_UseGradient", 0f },
+        { "_GradientTex", null },
         { "_GradientStrength", 0f },
+        { "_OcclusionMap", null },
         { "_OcclusionStrength", 1f }
     };
 
@@ -80,30 +92,31 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         }
 
         DrawBanner();
-        DrawToolbar(mat);
+        DrawTabBar();
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
         if (showValidation) DrawValidation(editor, mat);
         else if (showTextureInfo) DrawTextureInfo(mat);
-        else if (showPerformance) DrawPerformance(mat);
-        else DrawMainSections(editor, props, mat);
+        else DrawTabContent(editor, props, mat);
 
         EditorGUILayout.EndScrollView();
+
+        EditorGUILayout.Space(4);
+        DrawUtilityButtons(mat);
 
         SaveSectionStates(mat);
     }
 
     void DrawBanner()
     {
-        Rect r = EditorGUILayout.GetControlRect(false, 56);
-        EditorGUI.DrawRect(r, new Color(0.04f, 0.07f, 0.09f));
+        Rect r = EditorGUILayout.GetControlRect(false, 64);
+        EditorGUI.DrawRect(r, bannerBg);
 
         GUIStyle title = new GUIStyle(EditorStyles.boldLabel);
-        title.fontSize = 22;
+        title.fontSize = 20;
         title.alignment = TextAnchor.MiddleCenter;
         title.normal.textColor = accent;
-
         GUI.Label(r, "Blueys Texture Simple", title);
 
         Rect line = new Rect(r.x, r.yMax - 3, r.width, 3);
@@ -112,65 +125,76 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         GUIStyle ver = new GUIStyle(EditorStyles.miniLabel);
         ver.alignment = TextAnchor.MiddleCenter;
         ver.normal.textColor = new Color(0.5f, 0.5f, 0.5f);
-        GUI.Label(new Rect(r.x, r.yMax - 18, r.width, 18), "v1.0.1", ver);
+        GUI.Label(new Rect(r.x, r.yMax - 18, r.width, 18), "v1.1.1 | Professional VRChat Texture Shader", ver);
 
         EditorGUILayout.Space(6);
     }
 
-    void DrawToolbar(Material mat)
+    void DrawTabBar()
     {
-        EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-
-        Rect searchRect = EditorGUILayout.GetControlRect(GUILayout.Width(180));
-        searchRect.y += 2;
-        searchRect.height = 18;
-        searchQuery = EditorGUI.TextField(searchRect, searchQuery, EditorStyles.toolbarSearchField);
-
-        if (GUILayout.Button("Validate", EditorStyles.toolbarButton, GUILayout.Width(70)))
+        EditorGUILayout.BeginHorizontal();
+        for (int i = 0; i < tabs.Length; i++)
         {
-            showValidation = true;
-            showTextureInfo = false;
-            showPerformance = false;
-        }
+            bool active = tabIndex == i;
+            Color bg = active ? headerOn : headerOff;
+            Color textCol = active ? accent : new Color(0.82f, 0.82f, 0.82f);
 
-        if (GUILayout.Button("Textures", EditorStyles.toolbarButton, GUILayout.Width(70)))
-        {
-            showTextureInfo = true;
-            showValidation = false;
-            showPerformance = false;
-        }
+            Rect tabRect = EditorGUILayout.GetControlRect(GUILayout.Height(28), GUILayout.Width(80));
+            EditorGUI.DrawRect(tabRect, bg);
 
-        if (GUILayout.Button("Performance", EditorStyles.toolbarButton, GUILayout.Width(90)))
-        {
-            showPerformance = !showPerformance;
-            showValidation = false;
-            showTextureInfo = false;
-        }
+            GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
+            style.alignment = TextAnchor.MiddleCenter;
+            style.normal.textColor = textCol;
+            style.fontSize = 11;
+            GUI.Label(tabRect, tabs[i], style);
 
-        GUILayout.FlexibleSpace();
-
-        if (GUILayout.Button("Reset All", EditorStyles.toolbarButton, GUILayout.Width(70)))
-        {
-            if (EditorUtility.DisplayDialog("Reset Material", "Reset all material properties to defaults?", "Yes", "Cancel"))
+            if (active)
             {
-                ResetMaterial(mat);
+                Rect underline = new Rect(tabRect.x, tabRect.yMax - 2, tabRect.width, 2);
+                EditorGUI.DrawRect(underline, accent);
+            }
+
+            if (Event.current.type == EventType.MouseDown && tabRect.Contains(Event.current.mousePosition))
+            {
+                tabIndex = i;
+                Event.current.Use();
             }
         }
-
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(4);
     }
 
-    void DrawMainSections(MaterialEditor editor, MaterialProperty[] props, Material mat)
+    void DrawTabContent(MaterialEditor editor, MaterialProperty[] props, Material mat)
+    {
+        switch (tabIndex)
+        {
+            case 0: DrawMainTab(editor, props, mat); break;
+            case 1: DrawLightingTab(editor, props, mat); break;
+            case 2: DrawEffectsTab(editor, props, mat); break;
+            case 3: DrawRenderingTab(editor, props, mat); break;
+            case 4: DrawOptimizationTab(mat); break;
+            case 5: DrawPresetsTab(mat); break;
+        }
+    }
+
+    void DrawMainTab(MaterialEditor editor, MaterialProperty[] props, Material mat)
     {
         DrawPlainSection(editor, props, ref mainOpen, "Main Texture",
             "_MainTex", "_Color", "_MainTiling", "_MainOffset");
 
         DrawPlainSection(editor, props, ref lookOpen, "Texture Look",
-            "_Brightness", "_Contrast", "_Saturation", "_HueShift", "_Gamma", "_Vibrance", "_Sharpness",
-            "_Smoothness", "_Metallic", "_MetallicMap", "_MetallicStrength",
-            "_SmoothnessMap", "_SmoothnessStrength");
+            "_Brightness", "_Contrast", "_Saturation", "_HueShift", "_Gamma", "_Vibrance", "_Sharpness");
+    }
 
+    void DrawLightingTab(MaterialEditor editor, MaterialProperty[] props, Material mat)
+    {
+        DrawToggleSection(editor, props, ref overlayOpen, "Smoothness & Metallic", "_UseWetShine",
+            "_Smoothness", "_SpecularStrength", "_MetallicMap", "_MetallicStrength",
+            "_SmoothnessMap", "_SmoothnessStrength");
+    }
+
+    void DrawEffectsTab(MaterialEditor editor, MaterialProperty[] props, Material mat)
+    {
         DrawToggleSection(editor, props, ref overlayOpen, "Colour Overlay", "_UseSolidOverlay",
             "_SolidColor", "_SolidStrength");
 
@@ -188,17 +212,56 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         DrawToggleSection(editor, props, ref gradientOpen, "Gradient", "_UseGradient",
             "_GradientTex", "_GradientStrength");
 
-        DrawPlainSection(editor, props, ref renderOpen, "Rendering",
+        DrawToggleSection(editor, props, ref occlusionOpen, "Occlusion", "_UseOcclusion",
             "_OcclusionMap", "_OcclusionStrength");
+    }
 
+    void DrawRenderingTab(MaterialEditor editor, MaterialProperty[] props, Material mat)
+    {
+        EditorGUILayout.BeginVertical();
+        bool open = true;
+        open = DrawHeaderStrip(open, "Rendering Settings", false, false, null);
+
+        if (open)
+        {
+            DrawBodyStart();
+            EditorGUI.indentLevel++;
+
+            EditorGUILayout.LabelField("Render Queue", mat.renderQueue.ToString());
+            EditorGUILayout.LabelField("Render Type", mat.GetTag("RenderType", false, "Opaque"));
+            EditorGUILayout.LabelField("Shader", mat.shader.name);
+            EditorGUILayout.Space(8);
+
+            EditorGUI.BeginChangeCheck();
+            int queue = EditorGUILayout.IntField("Custom Render Queue", mat.renderQueue);
+            if (EditorGUI.EndChangeCheck())
+            {
+                mat.renderQueue = queue;
+                EditorUtility.SetDirty(mat);
+            }
+
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+        }
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.Space(5);
+    }
+
+    void DrawOptimizationTab(Material mat)
+    {
+        DrawPerformance(mat);
+    }
+
+    void DrawPresetsTab(Material mat)
+    {
         DrawPresetSection(mat);
         DrawCopyPaste(mat);
     }
 
     void DrawValidation(MaterialEditor editor, Material mat)
     {
-        bool valOpen = true;
         EditorGUILayout.BeginVertical();
+        bool valOpen = true;
         valOpen = DrawHeaderStrip(valOpen, "Material Validator", false, false, null);
 
         if (valOpen)
@@ -214,7 +277,7 @@ public class BlueysTextureSimpleGUI : ShaderGUI
                 fixes.Add("Assign a Main PNG Texture.");
             }
 
-            if (mat.HasProperty("_UseEmission") && mat.GetFloat("_UseEmission") > 0.5f && mat.GetTexture("_EmissionMap") == null)
+            if (mat.GetFloat("_UseEmission") > 0.5f && mat.GetTexture("_EmissionMap") == null)
             {
                 warnings.Add("Emission is enabled but no emission texture is assigned.");
                 fixes.Add("Assign an emission texture or disable emission.");
@@ -234,10 +297,7 @@ public class BlueysTextureSimpleGUI : ShaderGUI
                 if (!string.IsNullOrEmpty(path))
                 {
                     TextureImporter imp = AssetImporter.GetAtPath(path) as TextureImporter;
-                    if (imp != null)
-                    {
-                        mainHasMipmaps = imp.mipmapEnabled;
-                    }
+                    if (imp != null) mainHasMipmaps = imp.mipmapEnabled;
                 }
             }
 
@@ -271,7 +331,6 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
@@ -326,8 +385,8 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
     void DrawTextureInfo(Material mat)
     {
-        bool infoOpen = true;
         EditorGUILayout.BeginVertical();
+        bool infoOpen = true;
         infoOpen = DrawHeaderStrip(infoOpen, "Texture Information", false, false, null);
 
         if (infoOpen)
@@ -347,7 +406,6 @@ public class BlueysTextureSimpleGUI : ShaderGUI
                 if (tex == null) continue;
 
                 EditorGUILayout.LabelField(ObjectNames.NicifyVariableName(prop), tex.name);
-
                 EditorGUI.indentLevel++;
                 EditorGUILayout.LabelField("Resolution", tex.width + " x " + tex.height);
                 EditorGUILayout.LabelField("Type", tex.GetType().Name);
@@ -364,30 +422,21 @@ public class BlueysTextureSimpleGUI : ShaderGUI
                     }
                 }
 
-                EditorGUILayout.LabelField("VRAM", FormatVRAM(tex));
+                EditorGUILayout.LabelField("VRAM", BlueysTextureUtils.FormatVRAM(tex));
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space(4);
             }
 
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
 
-    string FormatVRAM(Texture tex)
-    {
-        long bytes = (long)tex.width * tex.height * 4;
-        if (bytes > 1048576) return (bytes / 1048576f).ToString("F1") + " MB";
-        if (bytes > 1024) return (bytes / 1024f).ToString("F1") + " KB";
-        return bytes + " B";
-    }
-
     void DrawPerformance(Material mat)
     {
-        bool perfOpen = true;
         EditorGUILayout.BeginVertical();
+        bool perfOpen = true;
         perfOpen = DrawHeaderStrip(perfOpen, "Performance Information", false, false, null);
 
         if (perfOpen)
@@ -413,17 +462,21 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
             EditorGUILayout.LabelField("Performance Rating", perfRating);
 
+            if (keywordCount > 5)
+            {
+                EditorGUILayout.HelpBox("This material has many active features. Consider disabling unused features for better VRChat performance.", MessageType.Warning);
+            }
+
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
 
     void DrawPresetSection(Material mat)
     {
-        bool presetOpen = true;
         EditorGUILayout.BeginVertical();
+        bool presetOpen = true;
         presetOpen = DrawHeaderStrip(presetOpen, "Presets", false, false, null);
 
         if (presetOpen)
@@ -449,7 +502,7 @@ public class BlueysTextureSimpleGUI : ShaderGUI
                     {
                         if (GUILayout.Button(presets[idx], GUILayout.Height(24)))
                         {
-                            ApplyPreset(mat, presets[idx]);
+                            BlueysTexturePresets.ApplyPreset(mat, presets[idx]);
                         }
                     }
                 }
@@ -457,209 +510,59 @@ public class BlueysTextureSimpleGUI : ShaderGUI
             }
 
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(6);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Save Custom Preset", GUILayout.Height(22)))
+            {
+                string name = EditorUtility.DisplayDialogComplex("Save Preset", "Enter preset name:", "Save", "Cancel", "") == 0 ? "Custom" : "";
+                if (!string.IsNullOrEmpty(name))
+                {
+                    BlueysTexturePresets.SaveCustomPreset(mat, name);
+                }
+            }
+            if (GUILayout.Button("Reset Material", GUILayout.Height(22)))
+            {
+                if (EditorUtility.DisplayDialog("Reset Material", "Reset all material properties to defaults?", "Yes", "Cancel"))
+                {
+                    ResetMaterial(mat);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
 
-    void ApplyPreset(Material mat, string preset)
-    {
-        switch (preset)
-        {
-            case "Wet Fur":
-                mat.SetFloat("_UseRimGlow", 1);
-                mat.SetFloat("_Smoothness", 0.9f);
-                mat.SetFloat("_Metallic", 0.1f);
-                mat.SetFloat("_Brightness", 1.1f);
-                mat.SetFloat("_Contrast", 1.2f);
-                mat.SetFloat("_Saturation", 0.9f);
-                mat.SetFloat("_Vibrance", 0.3f);
-                break;
-            case "Plastic":
-                mat.SetFloat("_Smoothness", 0.7f);
-                mat.SetFloat("_Metallic", 0);
-                mat.SetFloat("_Brightness", 1.0f);
-                mat.SetFloat("_Contrast", 1.1f);
-                mat.SetFloat("_Saturation", 1.2f);
-                break;
-            case "Rubber":
-                mat.SetFloat("_Smoothness", 0.3f);
-                mat.SetFloat("_Metallic", 0);
-                mat.SetFloat("_Brightness", 1.0f);
-                mat.SetFloat("_Contrast", 1.0f);
-                break;
-            case "Latex":
-                mat.SetFloat("_Smoothness", 0.95f);
-                mat.SetFloat("_Metallic", 0);
-                mat.SetFloat("_UseRimGlow", 1);
-                mat.SetFloat("_RimStrength", 1.5f);
-                mat.SetFloat("_Brightness", 1.1f);
-                mat.SetFloat("_Contrast", 1.1f);
-                break;
-            case "Metal":
-                mat.SetFloat("_Smoothness", 0.9f);
-                mat.SetFloat("_Metallic", 1.0f);
-                mat.SetFloat("_Brightness", 1.0f);
-                mat.SetFloat("_Contrast", 1.1f);
-                mat.SetFloat("_Saturation", 0.7f);
-                break;
-            case "Skin":
-                mat.SetFloat("_Smoothness", 0.4f);
-                mat.SetFloat("_Metallic", 0);
-                mat.SetFloat("_Brightness", 1.05f);
-                mat.SetFloat("_Contrast", 1.05f);
-                mat.SetFloat("_Saturation", 0.9f);
-                break;
-            case "Toon":
-                mat.SetFloat("_Contrast", 1.8f);
-                mat.SetFloat("_Brightness", 1.0f);
-                mat.SetFloat("_Saturation", 1.5f);
-                mat.SetFloat("_Sharpness", 1.0f);
-                mat.SetFloat("_Smoothness", 0);
-                break;
-            case "Glow":
-                mat.SetFloat("_UseEmission", 1);
-                mat.SetFloat("_EmissionStrength", 2.0f);
-                mat.SetFloat("_UseRimGlow", 1);
-                mat.SetFloat("_RimStrength", 2.0f);
-                mat.SetFloat("_Brightness", 1.2f);
-                break;
-            case "Matte":
-                mat.SetFloat("_Smoothness", 0);
-                mat.SetFloat("_Metallic", 0);
-                mat.SetFloat("_Brightness", 1.0f);
-                mat.SetFloat("_Contrast", 1.0f);
-                break;
-            case "Fabric":
-                mat.SetFloat("_Smoothness", 0.2f);
-                mat.SetFloat("_Metallic", 0);
-                mat.SetFloat("_Brightness", 1.0f);
-                mat.SetFloat("_Contrast", 1.1f);
-                mat.SetFloat("_Saturation", 0.9f);
-                mat.SetFloat("_UseSolidOverlay", 1);
-                mat.SetFloat("_SolidStrength", 0.3f);
-                break;
-        }
-
-        EditorUtility.SetDirty(mat);
-    }
-
-    void DrawCopyPaste(Material mat)
+    void DrawUtilityButtons(Material mat)
     {
         EditorGUILayout.BeginHorizontal();
-
-        if (GUILayout.Button("Copy Settings", GUILayout.Height(22)))
+        if (GUILayout.Button("Validate", GUILayout.Height(22)))
         {
-            CopyMaterialSettings(mat);
+            showValidation = true;
+            showTextureInfo = false;
         }
-
-        if (GUILayout.Button("Paste Settings", GUILayout.Height(22)))
+        if (GUILayout.Button("Textures", GUILayout.Height(22)))
         {
-            PasteMaterialSettings(mat);
+            showTextureInfo = true;
+            showValidation = false;
         }
-
+        if (GUILayout.Button("Back to Inspector", GUILayout.Height(22)))
+        {
+            showValidation = false;
+            showTextureInfo = false;
+        }
+        GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Space(4);
-    }
-
-    Dictionary<string, object> copiedSettings;
-
-    void CopyMaterialSettings(Material mat)
-    {
-        copiedSettings = new Dictionary<string, object>();
-        Shader shader = mat.shader;
-        int propCount = ShaderUtil.GetPropertyCount(shader);
-        for (int i = 0; i < propCount; i++)
-        {
-            string name = ShaderUtil.GetPropertyName(shader, i);
-            ShaderUtil.ShaderPropertyType type = ShaderUtil.GetPropertyType(shader, i);
-            switch (type)
-            {
-                case ShaderUtil.ShaderPropertyType.Color:
-                    copiedSettings[name] = mat.GetColor(name);
-                    break;
-                case ShaderUtil.ShaderPropertyType.Float:
-                case ShaderUtil.ShaderPropertyType.Range:
-                    copiedSettings[name] = mat.GetFloat(name);
-                    break;
-                case ShaderUtil.ShaderPropertyType.Vector:
-                    copiedSettings[name] = mat.GetVector(name);
-                    break;
-                case ShaderUtil.ShaderPropertyType.TexEnv:
-                    copiedSettings[name] = mat.GetTexture(name);
-                    break;
-            }
-        }
-        EditorUtility.DisplayDialog("Copied", "Material settings copied to clipboard.", "OK");
-    }
-
-    void PasteMaterialSettings(Material mat)
-    {
-        if (copiedSettings == null)
-        {
-            EditorUtility.DisplayDialog("Paste Failed", "No settings in clipboard. Copy a material first.", "OK");
-            return;
-        }
-
-        foreach (var kvp in copiedSettings)
-        {
-            if (mat.HasProperty(kvp.Key))
-            {
-                switch (kvp.Value)
-                {
-                    case Color c:
-                        mat.SetColor(kvp.Key, c);
-                        break;
-                    case float f:
-                        mat.SetFloat(kvp.Key, f);
-                        break;
-                    case Vector4 v:
-                        mat.SetVector(kvp.Key, v);
-                        break;
-                    case Texture t:
-                        mat.SetTexture(kvp.Key, t);
-                        break;
-                }
-            }
-        }
-
-        EditorUtility.SetDirty(mat);
-        EditorUtility.DisplayDialog("Pasted", "Material settings applied.", "OK");
-    }
-
-    void ResetMaterial(Material mat)
-    {
-        Shader shader = mat.shader;
-        int propCount = ShaderUtil.GetPropertyCount(shader);
-        for (int i = 0; i < propCount; i++)
-        {
-            string name = ShaderUtil.GetPropertyName(shader, i);
-            ShaderUtil.ShaderPropertyType type = ShaderUtil.GetPropertyType(shader, i);
-            if (type == ShaderUtil.ShaderPropertyType.Color)
-            {
-                if (defaultValues.ContainsKey(name) && defaultValues[name] is Color col)
-                    mat.SetColor(name, col);
-            }
-            else if (type == ShaderUtil.ShaderPropertyType.Float || type == ShaderUtil.ShaderPropertyType.Range)
-            {
-                if (defaultValues.ContainsKey(name) && defaultValues[name] is float f)
-                    mat.SetFloat(name, f);
-            }
-            else if (type == ShaderUtil.ShaderPropertyType.Vector)
-            {
-                if (defaultValues.ContainsKey(name) && defaultValues[name] is Vector4 v)
-                    mat.SetVector(name, v);
-            }
-        }
-        EditorUtility.SetDirty(mat);
     }
 
     void DrawEmissionSection(MaterialEditor editor, MaterialProperty[] props, ref bool open, Material mat)
     {
         EditorGUILayout.BeginVertical();
-        open = DrawHeaderStrip(open, "Emission Texture", true, mat.GetFloat("_UseEmission") > 0.5f, FindProperty("_UseEmission", props, false));
+        open = DrawHeaderStrip(open, "Emission", true, mat.GetFloat("_UseEmission") > 0.5f, FindProperty("_UseEmission", props, false));
 
         if (open)
         {
@@ -674,15 +577,18 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
             if (mat.GetFloat("_UseEmission") > 0.5f)
             {
-                EditorGUILayout.LabelField("Pulse Animation");
+                EditorGUILayout.Space(4);
+                EditorGUILayout.LabelField("Pulse Animation", EditorStyles.boldLabel);
                 DrawProp(editor, props, "_PulseSpeed");
                 DrawProp(editor, props, "_PulseMin");
 
-                EditorGUILayout.LabelField("Flicker Effect");
+                EditorGUILayout.Space(4);
+                EditorGUILayout.LabelField("Flicker Effect", EditorStyles.boldLabel);
                 DrawProp(editor, props, "_FlickerSpeed");
                 DrawProp(editor, props, "_FlickerIntensity");
 
-                EditorGUILayout.LabelField("Scrolling Emission");
+                EditorGUILayout.Space(4);
+                EditorGUILayout.LabelField("Scrolling Emission", EditorStyles.boldLabel);
                 DrawProp(editor, props, "_ScrollSpeed");
                 DrawProp(editor, props, "_ScrollDirection");
             }
@@ -690,7 +596,6 @@ public class BlueysTextureSimpleGUI : ShaderGUI
             EditorGUI.indentLevel--;
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
@@ -747,23 +652,19 @@ public class BlueysTextureSimpleGUI : ShaderGUI
     void DrawPlainSection(MaterialEditor editor, MaterialProperty[] props, ref bool open, string title, params string[] propertyNames)
     {
         EditorGUILayout.BeginVertical();
-
         open = DrawHeaderStrip(open, title, false, false, null);
 
         if (open)
         {
             DrawBodyStart();
-
             EditorGUI.indentLevel++;
             foreach (string propertyName in propertyNames)
             {
                 DrawProp(editor, props, propertyName);
             }
             EditorGUI.indentLevel--;
-
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
@@ -774,13 +675,11 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         bool enabled = toggle != null && toggle.floatValue > 0.5f;
 
         EditorGUILayout.BeginVertical();
-
         open = DrawHeaderStrip(open, title, true, enabled, toggle);
 
         if (open)
         {
             DrawBodyStart();
-
             EditorGUI.indentLevel++;
 
             if (enabled)
@@ -798,10 +697,8 @@ public class BlueysTextureSimpleGUI : ShaderGUI
             }
 
             EditorGUI.indentLevel--;
-
             EditorGUILayout.EndVertical();
         }
-
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
@@ -809,7 +706,6 @@ public class BlueysTextureSimpleGUI : ShaderGUI
     void DrawProp(MaterialEditor editor, MaterialProperty[] props, string name)
     {
         MaterialProperty prop = FindProperty(name, props, false);
-
         if (prop != null)
         {
             GUIContent content = new GUIContent(prop.displayName, GetTooltip(name));
@@ -823,6 +719,8 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         {
             case "_MainTex": return "The main PNG texture for the material.";
             case "_Color": return "Tint colour applied to the main texture.";
+            case "_MainTiling": return "Tiling of the main texture UVs.";
+            case "_MainOffset": return "Offset of the main texture UVs.";
             case "_Brightness": return "Brightens or darkens the texture.";
             case "_Contrast": return "Adjusts the difference between light and dark areas.";
             case "_Saturation": return "Adjusts colour intensity.";
@@ -832,11 +730,33 @@ public class BlueysTextureSimpleGUI : ShaderGUI
             case "_Sharpness": return "Enhances edge detail.";
             case "_Smoothness": return "Smoothness of the surface.";
             case "_Metallic": return "Metallic value of the surface.";
+            case "_MetallicMap": return "Texture that defines metallic areas.";
+            case "_MetallicStrength": return "Strength of the metallic map effect.";
+            case "_SmoothnessMap": return "Texture that defines smoothness areas.";
+            case "_SmoothnessStrength": return "Strength of the smoothness map effect.";
+            case "_SolidColor": return "Overlay colour applied to the material.";
+            case "_SolidStrength": return "Strength of the colour overlay.";
             case "_EmissionMap": return "Texture that defines emission areas.";
+            case "_EmissionMask": return "Mask for the emission texture.";
+            case "_EmissionColor": return "Colour of the emission.";
             case "_EmissionStrength": return "Brightness of the emission.";
+            case "_EmissionUsesPNG": return "Use main PNG alpha as emission mask.";
+            case "_PulseSpeed": return "Speed of the pulse animation.";
+            case "_PulseMin": return "Minimum brightness during pulse.";
+            case "_FlickerSpeed": return "Speed of the flicker effect.";
+            case "_FlickerIntensity": return "Intensity of the flicker effect.";
+            case "_ScrollSpeed": return "Speed of the scrolling emission.";
+            case "_ScrollDirection": return "Direction of the scrolling emission in degrees.";
+            case "_RimColor": return "Colour of the rim glow.";
             case "_RimPower": return "How tight the rim glow is.";
             case "_RimStrength": return "Brightness of the rim glow.";
             case "_AlphaCutoff": return "Alpha cutoff for PNG cutout.";
+            case "_MatcapTex": return "Matcap texture for fake reflections.";
+            case "_MatcapStrength": return "Strength of the matcap effect.";
+            case "_GradientTex": return "Gradient texture for vertical colouring.";
+            case "_GradientStrength": return "Strength of the gradient effect.";
+            case "_OcclusionMap": return "Texture that defines ambient occlusion.";
+            case "_OcclusionStrength": return "Strength of the ambient occlusion.";
             default: return "";
         }
     }
@@ -846,13 +766,15 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         string key = "BlueysTextureSimple_" + mat.GetInstanceID() + "_";
         mainOpen = EditorPrefs.GetBool(key + "mainOpen", true);
         lookOpen = EditorPrefs.GetBool(key + "lookOpen", true);
-        overlayOpen = EditorPrefs.GetBool(key + "overlayOpen", false);
+        overlayOpen = EditorPrefs.GetBool(key + "overlayOpen", true);
         emissionOpen = EditorPrefs.GetBool(key + "emissionOpen", true);
         rimOpen = EditorPrefs.GetBool(key + "rimOpen", true);
         cutoutOpen = EditorPrefs.GetBool(key + "cutoutOpen", false);
         matcapOpen = EditorPrefs.GetBool(key + "matcapOpen", false);
         gradientOpen = EditorPrefs.GetBool(key + "gradientOpen", false);
-        renderOpen = EditorPrefs.GetBool(key + "renderOpen", false);
+        occlusionOpen = EditorPrefs.GetBool(key + "occlusionOpen", false);
+        renderOpen = EditorPrefs.GetBool(key + "renderOpen", true);
+        perfOpen = EditorPrefs.GetBool(key + "perfOpen", true);
     }
 
     void SaveSectionStates(Material mat)
@@ -866,6 +788,87 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         EditorPrefs.SetBool(key + "cutoutOpen", cutoutOpen);
         EditorPrefs.SetBool(key + "matcapOpen", matcapOpen);
         EditorPrefs.SetBool(key + "gradientOpen", gradientOpen);
+        EditorPrefs.SetBool(key + "occlusionOpen", occlusionOpen);
         EditorPrefs.SetBool(key + "renderOpen", renderOpen);
+        EditorPrefs.SetBool(key + "perfOpen", perfOpen);
+    }
+
+    void CopyMaterialSettings(Material mat)
+    {
+        Dictionary<string, object> settings = new Dictionary<string, object>();
+        Shader shader = mat.shader;
+        int propCount = shader.GetPropertyCount();
+        for (int i = 0; i < propCount; i++)
+        {
+            string name = shader.GetPropertyName(i);
+            var type = shader.GetPropertyType(name);
+            switch (type)
+            {
+                case UnityEngine.Rendering.ShaderPropertyType.Color:
+                    settings[name] = mat.GetColor(name);
+                    break;
+                case UnityEngine.Rendering.ShaderPropertyType.Float:
+                case UnityEngine.Rendering.ShaderPropertyType.Range:
+                    settings[name] = mat.GetFloat(name);
+                    break;
+                case UnityEngine.Rendering.ShaderPropertyType.Vector:
+                    settings[name] = mat.GetVector(name);
+                    break;
+                case UnityEngine.Rendering.ShaderPropertyType.Texture:
+                    settings[name] = mat.GetTexture(name);
+                    break;
+            }
+        }
+
+        EditorPrefs.SetString("BlueysSimple_CopiedSettings", BlueysTextureUtils.SavePresetToJson(settings));
+        EditorUtility.DisplayDialog("Copied", "Material settings copied to clipboard.", "OK");
+    }
+
+    void PasteMaterialSettings(Material mat)
+    {
+        string json = EditorPrefs.GetString("BlueysSimple_CopiedSettings", "");
+        if (string.IsNullOrEmpty(json))
+        {
+            EditorUtility.DisplayDialog("Paste Failed", "No settings in clipboard. Copy a material first.", "OK");
+            return;
+        }
+
+        Dictionary<string, object> settings = BlueysTextureUtils.LoadPresetFromJson(json);
+        if (settings != null)
+        {
+            BlueysTexturePresets.ApplyPresetData(mat, settings);
+            EditorUtility.SetDirty(mat);
+            EditorUtility.DisplayDialog("Pasted", "Material settings applied.", "OK");
+        }
+    }
+
+    void ResetMaterial(Material mat)
+    {
+        Shader shader = mat.shader;
+        int propCount = shader.GetPropertyCount();
+        for (int i = 0; i < propCount; i++)
+        {
+            string name = shader.GetPropertyName(i);
+            if (!defaultValues.ContainsKey(name)) continue;
+
+            var type = shader.GetPropertyType(name);
+            switch (type)
+            {
+                case UnityEngine.Rendering.ShaderPropertyType.Color:
+                    if (defaultValues[name] is Color col) mat.SetColor(name, col);
+                    break;
+                case UnityEngine.Rendering.ShaderPropertyType.Float:
+                case UnityEngine.Rendering.ShaderPropertyType.Range:
+                    if (defaultValues[name] is float f) mat.SetFloat(name, f);
+                    break;
+                case UnityEngine.Rendering.ShaderPropertyType.Vector:
+                    if (defaultValues[name] is Vector4 v) mat.SetVector(name, v);
+                    break;
+                case UnityEngine.Rendering.ShaderPropertyType.Texture:
+                    mat.SetTexture(name, null);
+                    break;
+            }
+        }
+        EditorUtility.SetDirty(mat);
     }
 }
