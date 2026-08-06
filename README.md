@@ -1,187 +1,165 @@
 # Blueys Texture
 
-<p align="left">
-  <img src="https://img.shields.io/badge/VRChat-VCC-blue?style=flat-square">
-  <img src="https://img.shields.io/badge/Unity-2022.3+-black?style=flat-square">
-  <img src="https://img.shields.io/badge/Platform-PC%20Only-red?style=flat-square">
-  <img src="https://img.shields.io/badge/Package-VPM-purple?style=flat-square">
-  <img src="https://img.shields.io/github/v/release/Alang0991/blueys-texture?style=flat-square">
-  <img src="https://img.shields.io/github/downloads/Alang0991/blueys-texture/total?style=flat-square">
-</p>
+Banner Image
 
-Professional VRChat texture shaders with emission, effects, and custom material inspectors.
+Badges
 
-> Currently intended for **PC Only**.
-
+Professional texture shaders for VRChat with a modern inspector, advanced material controls, and creator-friendly workflows.
 
 ---
 
-## Installation
+Table of Contents
 
-### Add Repository
-
-Add this repository to VRChat Creator Companion:
-
-```text
-https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
-```
-
-### Install Through VCC
-
-1. Open VRChat Creator Companion
-2. Open your project
-3. Click Manage Project
-4. Open Packages
-5. Install Blueys Texture
+- Features
+- Screenshots
+- Installation
+- Quick Start
+- Shaders
+- Inspector
+- Performance
+- Requirements
+- FAQ
+- Roadmap
+- Changelog
+- Contributing
+- License
 
 ---
 
-## Features
+Screenshots
 
-### BlueysTexture (Full Shader)
+(Inspector)
 
-- **Texture Controls:** Tiling, offset, tint, brightness, contrast, saturation, hue shift, gamma, vibrance, sharpness
-- **Detail Overlay:** Detail texture with tiling and offset controls
-- **Normal Map:** Normal mapping with strength control
-- **Wet Shine:** Smoothness, specular strength, metallic map, smoothness map support
-- **Edge Glow:** Rim lighting with adjustable power and strength
-- **Deep Color:** View-dependent depth colouring
-- **Inner Glow:** Soft inner glow effect
-- **Emission System:** Emission textures with pulse, flicker, and scrolling animation
-- **Fake Reflection:** Fresnel-based reflections with reflection map support
-- **Matcap:** Matcap reflection support
-- **Gradient:** Colour gradient support
-- **Dissolve:** Animated dissolve effect with edge glow
-- **Outline:** Procedural outline system
-- **Ambient Occlusion:** AO map support
-- **Improved Fresnel:** Better edge detection system
-- **Transparency:** Advanced alpha handling with edge alpha boost
+(Material Example)
 
-### BlueysTextureSimple (Lightweight Shader)
+(Emission)
 
-- **Texture Controls:** Brightness, contrast, saturation, hue shift, gamma, vibrance, sharpness
-- **Metallic & Smoothness:** Full PBR support with map inputs
-- **Colour Overlay:** Solid colour blending
-- **Emission System:** Emission with mask, pulse, flicker, and scrolling
-- **Rim Glow:** Adjustable rim lighting
-- **PNG Cutout:** Alpha cutout for PNG shapes
-- **Matcap:** Matcap reflection support
-- **Gradient:** Colour gradient support
-- **Ambient Occlusion:** AO map support
+(Outline)
 
-### Custom Shader Inspector
-
-- Search bar for quick property finding
-- Better category organisation
-- Dark blue professional inspector style
-- Tooltips for all properties
-- Reset buttons
-- Copy/Paste material settings
-- 10 Material presets
-- Performance information panel
-- Material validator with auto-fix
-- Texture information display
-- Remembered section states
-
-### Material Presets
-
-- Wet Fur
-- Plastic
-- Rubber
-- Latex
-- Metal
-- Skin
-- Toon
-- Glow
-- Matte
-- Fabric
+(Dissolve)
 
 ---
 
-## Included Files
+Why Blueys Texture?
 
-```text
-Runtime/
-└── Shaders/
-    ├── BlueysTexture.shader
-    └── BlueysTextureSimple.shader
-
-Editor/
-├── BlueysTextureGUI.cs
-└── BlueysTextureSimpleGUI.cs
-```
+Short explanation of what makes it different from other shaders.
 
 ---
 
-## Requirements
+Shader Comparison
 
-| Software | Version |
-|----------|---------|
-| Unity | 2022.3+ |
-| VRChat SDK | Latest |
-| VCC | Latest |
-| Platform | PC Only |
-
----
-
-## Version
-
-Current Version: **1.0.1**
+| Feature | BlueysTexture | BlueysTextureSimple |
+|----------|---------------|---------------------|
+| Advanced Lighting | ✅ | ❌ |
+| Emission | ✅ | ✅ |
+| Outline | ✅ | ❌ |
+| Dissolve | ✅ | ❌ |
+| Matcap | ✅ | ✅ |
+| AO | ✅ | ✅ |
+| Performance | High | Very High |
 
 ---
 
-## Repository
+Installation
 
-https://github.com/Alang0991/blueys-texture
+VCC
 
----
+Manual
 
-## Author
-
-**Blueys**
-
-Created for VRChat creators looking for simple but powerful texture shaders.
+Git URL
 
 ---
 
-## Changelog
+Quick Start
 
-### v1.0.1
+Create Material
 
-**Shader Improvements:**
-- Added shader keywords for all toggleable features (better performance)
-- Added UV tiling and offset controls for main texture
-- Added hue shift, gamma, vibrance, and sharpness controls
-- Added metallic map and smoothness map support
-- Added ambient occlusion map support
-- Added matcap reflection support
-- Added colour gradient support
-- Added outline system
-- Added dissolve effect with edge glow
-- Improved Fresnel system
-- Better transparency handling with edge alpha boost
-- Added pulse, flicker, and scrolling emission animations
-- Improved reflection controls with reflection map support
+Select Shader
 
-**Inspector Improvements:**
-- Added search bar for quick property finding
-- Added material validator with auto-fix suggestions
-- Added texture information panel (resolution, format, VRAM, mipmaps)
-- Added performance information panel
-- Added 10 material presets
-- Added copy/paste material settings
-- Added reset all button
-- Added tooltips for all properties
-- Improved spacing and visual polish
-- Remembered section states per material
+Assign Texture
 
-**Quality of Life:**
-- Added CHANGELOG.md
-- Updated documentation
-- Better VRChat performance with shader keywords
+Done
 
 ---
 
-## License
+Features
 
-MIT License
+Each feature gets:
+
+✔ Screenshot
+
+✔ Description
+
+✔ Supported options
+
+---
+
+Inspector
+
+Large screenshots showing every category.
+
+Explain every section.
+
+---
+
+Performance
+
+Recommended texture sizes
+
+Shader keyword optimisation
+
+GPU recommendations
+
+VRChat compatibility
+
+---
+
+Roadmap
+
+v1.3.0
+
+v1.4.0
+
+v2.0.0
+
+---
+
+FAQ
+
+Why is my texture pink?
+
+Why is emission not working?
+
+How do I use transparency?
+
+Why doesn't Quest support this?
+
+---
+
+Troubleshooting
+
+Compilation errors
+
+Missing package
+
+Broken materials
+
+VCC problems
+
+Unity version mismatch
+
+---
+
+Contributing
+
+How to report bugs
+
+Feature requests
+
+Pull requests
+
+---
+
+License
+
+MIT
