@@ -7,18 +7,14 @@ public class BlueysTextureGUI : ShaderGUI
     bool mainOpen = true;
     bool transparencyOpen = true;
     bool textureOpen = true;
-    bool detailOpen = false;
+    bool toonOpen = false;
+    bool rimOpen = false;
     bool normalOpen = false;
-    bool shineOpen = true;
-    bool edgeOpen = true;
-    bool depthOpen = false;
-    bool innerOpen = true;
+    bool materialOpen = false;
     bool emissionOpen = false;
-    bool reflectionOpen = false;
+    bool detailOpen = false;
     bool matcapOpen = false;
     bool gradientOpen = false;
-    bool dissolveOpen = false;
-    bool outlineOpen = false;
     bool finalOpen = false;
     bool renderOpen = false;
 
@@ -41,66 +37,61 @@ public class BlueysTextureGUI : ShaderGUI
     {
         { "_Cull", 2f },
         { "_Color", new Color(1f, 1f, 1f, 1f) },
+        { "_MainTexTiling", new Vector4(1f, 1f, 0f, 0f) },
+        { "_MainTexOffset", new Vector4(0f, 0f, 0f, 0f) },
         { "_Alpha", 1f },
-        { "_UseTextureBoost", 0f },
-        { "_TextureStrength", 1f },
-        { "_Contrast", 1f },
         { "_Brightness", 1f },
+        { "_Contrast", 1f },
         { "_Saturation", 1f },
         { "_HueShift", 0f },
         { "_Gamma", 1f },
         { "_Vibrance", 0f },
         { "_Sharpness", 0f },
-        { "_UseDetail", 0f },
-        { "_DetailStrength", 0.2f },
-        { "_DetailTiling", 8f },
-        { "_DetailOffset", new Vector4(0f, 0f, 0f, 0f) },
-        { "_UseNormal", 0f },
-        { "_BumpStrength", 0.4f },
-        { "_UseWetShine", 0f },
-        { "_Smoothness", 1f },
-        { "_SpecularStrength", 0.5f },
-        { "_MetallicStrength", 0f },
-        { "_SmoothnessStrength", 0f },
-        { "_UseEdgeGlow", 0f },
+        { "_UseToonLighting", 0f },
+        { "_UseCelShading", 0f },
+        { "_ShadowColor", new Color(0.1f, 0.1f, 0.2f, 1f) },
+        { "_ShadowStrength", 0.5f },
+        { "_ShadowThreshold", 0.5f },
+        { "_ShadowSmoothness", 0.1f },
+        { "_ToonLightDir", new Vector4(0f, 1f, 0f, 0f) },
+        { "_UseShadeRamp", 0f },
+        { "_UseRimLight", 0f },
         { "_RimColor", new Color(0.35f, 0.9f, 1f, 1f) },
         { "_RimPower", 3f },
         { "_RimStrength", 2f },
-        { "_EdgeAlphaBoost", 0.1f },
-        { "_UseDepth", 0f },
-        { "_DepthColor", new Color(0f, 0.16f, 0.75f, 1f) },
-        { "_DepthStrength", 0.5f },
-        { "_UseInnerGlow", 0f },
-        { "_InnerColor", new Color(0.15f, 0.75f, 1f, 1f) },
-        { "_InnerStrength", 0.6f },
-        { "_InnerPower", 2f },
+        { "_RimWidth", 0.5f },
+        { "_UseFresnel", 0f },
+        { "_FresnelColor", new Color(0.35f, 0.9f, 1f, 1f) },
+        { "_FresnelPower", 3f },
+        { "_FresnelStrength", 2f },
+        { "_UseMatcap", 0f },
+        { "_MatcapStrength", 0f },
+        { "_UseFakeLight", 0f },
+        { "_FakeLightColor", new Color(1f, 1f, 1f, 1f) },
+        { "_FakeLightIntensity", 1f },
+        { "_FakeLightDir", new Vector4(0f, 1f, 0f, 0f) },
+        { "_UseDetail", 0f },
+        { "_DetailStrength", 0.2f },
+        { "_DetailTexTiling", new Vector4(8f, 8f, 0f, 0f) },
+        { "_DetailTexOffset", new Vector4(0f, 0f, 0f, 0f) },
+        { "_DetailBlend", 1f },
+        { "_UseNormal", 0f },
+        { "_BumpStrength", 0.4f },
+        { "_UseParallax", 0f },
+        { "_ParallaxStrength", 0.02f },
+        { "_Smoothness", 1f },
+        { "_MetallicStrength", 0f },
+        { "_SmoothnessStrength", 0f },
+        { "_OcclusionStrength", 1f },
         { "_UseEmission", 0f },
         { "_EmissionColor", new Color(0.1f, 0.7f, 1f, 1f) },
         { "_EmissionStrength", 1f },
-        { "_PulseSpeed", 0f },
-        { "_PulseMin", 0.5f },
-        { "_FlickerSpeed", 0f },
-        { "_FlickerIntensity", 0f },
-        { "_ScrollSpeed", 0f },
-        { "_ScrollDirection", 0f },
-        { "_UseReflection", 0f },
-        { "_ReflectionColor", new Color(0.7f, 0.95f, 1f, 1f) },
-        { "_ReflectionStrength", 0.4f },
-        { "_ReflectionPower", 4f },
-        { "_ReflectionBlend", 0f },
-        { "_UseOutline", 0f },
-        { "_OutlineColor", new Color(0f, 0f, 0f, 1f) },
-        { "_OutlineWidth", 0f },
-        { "_OutlineThreshold", 0.1f },
-        { "_UseDissolve", 0f },
-        { "_DissolveAmount", 0f },
-        { "_DissolveEdgeWidth", 0.05f },
-        { "_DissolveEdgeColor", new Color(1f, 0.5f, 0f, 1f) },
-        { "_UseMatcap", 0f },
-        { "_MatcapStrength", 0f },
-        { "_UseGradient", 0f },
-        { "_GradientStrength", 0f },
-        { "_OcclusionStrength", 1f },
+        { "_EmissionPulseSpeed", 0f },
+        { "_EmissionPulseMin", 0.5f },
+        { "_EmissionFlickerSpeed", 0f },
+        { "_EmissionFlickerIntensity", 0f },
+        { "_EmissionScrollSpeed", 0f },
+        { "_EmissionScrollDirection", 0f },
         { "_FinalGlowPower", 1f }
     };
 
@@ -147,7 +138,7 @@ public class BlueysTextureGUI : ShaderGUI
         GUIStyle ver = new GUIStyle(EditorStyles.miniLabel);
         ver.alignment = TextAnchor.MiddleCenter;
         ver.normal.textColor = new Color(0.5f, 0.5f, 0.5f);
-        GUI.Label(new Rect(r.x, r.yMax - 18, r.width, 18), "v1.0.1", ver);
+        GUI.Label(new Rect(r.x, r.yMax - 18, r.width, 18), "v1.1.0", ver);
 
         EditorGUILayout.Space(6);
     }
@@ -199,39 +190,29 @@ public class BlueysTextureGUI : ShaderGUI
     void DrawMainSections(MaterialEditor editor, MaterialProperty[] props, Material mat)
     {
         DrawPlainSection(editor, props, ref mainOpen, "Main Texture",
-            "_MainTex", "_Color", "_MainTiling", "_MainOffset");
+            "_MainTex", "_Color", "_MainTexTiling", "_MainTexOffset");
 
         DrawPlainSection(editor, props, ref transparencyOpen, "Transparency",
             "_Alpha");
 
-        DrawToggleSection(editor, props, ref textureOpen, "Texture Enhancement", "_UseTextureBoost",
-            "_TextureStrength", "_Contrast", "_Brightness", "_Saturation",
-            "_HueShift", "_Gamma", "_Vibrance", "_Sharpness");
+        DrawPlainSection(editor, props, ref textureOpen, "Texture Look",
+            "_Brightness", "_Contrast", "_Saturation", "_HueShift", "_Gamma", "_Vibrance", "_Sharpness");
 
-        DrawToggleSection(editor, props, ref detailOpen, "Detail Overlay", "_UseDetail",
-            "_DetailTex", "_DetailStrength", "_DetailTiling", "_DetailOffset");
+        DrawShadingSection(editor, props, ref toonOpen, mat);
+
+        DrawRimLightSection(editor, props, ref rimOpen, mat);
 
         DrawToggleSection(editor, props, ref normalOpen, "Normal Map", "_UseNormal",
             "_BumpMap", "_BumpStrength");
 
-        DrawToggleSection(editor, props, ref shineOpen, "Wet Shine", "_UseWetShine",
-            "_Smoothness", "_SpecularStrength", "_MetallicMap", "_MetallicStrength",
-            "_SmoothnessMap", "_SmoothnessStrength");
-
-        DrawToggleSection(editor, props, ref edgeOpen, "Edge Glow", "_UseEdgeGlow",
-            "_RimColor", "_RimPower", "_RimStrength", "_EdgeAlphaBoost");
-
-        DrawToggleSection(editor, props, ref depthOpen, "Deep Color", "_UseDepth",
-            "_DepthColor", "_DepthStrength");
-
-        DrawToggleSection(editor, props, ref innerOpen, "Inner Glow", "_UseInnerGlow",
-            "_InnerColor", "_InnerStrength", "_InnerPower");
+        DrawPlainSection(editor, props, ref materialOpen, "Material",
+            "_Smoothness", "_MetallicStrength", "_MetallicMap",
+            "_SmoothnessStrength", "_SmoothnessMap");
 
         DrawEmissionSection(editor, props, ref emissionOpen, mat);
 
-        DrawToggleSection(editor, props, ref reflectionOpen, "Fake Reflection", "_UseReflection",
-            "_ReflectionColor", "_ReflectionStrength", "_ReflectionPower",
-            "_ReflectionMap", "_ReflectionBlend");
+        DrawToggleSection(editor, props, ref detailOpen, "Detail Overlay", "_UseDetail",
+            "_DetailTex", "_DetailStrength", "_DetailTexTiling", "_DetailTexOffset");
 
         DrawToggleSection(editor, props, ref matcapOpen, "Matcap", "_UseMatcap",
             "_MatcapTex", "_MatcapStrength");
@@ -239,13 +220,7 @@ public class BlueysTextureGUI : ShaderGUI
         DrawToggleSection(editor, props, ref gradientOpen, "Gradient", "_UseGradient",
             "_GradientTex", "_GradientStrength");
 
-        DrawToggleSection(editor, props, ref dissolveOpen, "Dissolve", "_UseDissolve",
-            "_DissolveAmount", "_DissolveEdgeWidth", "_DissolveEdgeColor");
-
-        DrawToggleSection(editor, props, ref outlineOpen, "Outline", "_UseOutline",
-            "_OutlineColor", "_OutlineWidth", "_OutlineThreshold");
-
-        DrawToggleSection(editor, props, ref finalOpen, "Occlusion & Final Output",
+        DrawPlainSection(editor, props, ref finalOpen, "Occlusion & Final Output",
             "_OcclusionMap", "_OcclusionStrength", "_FinalGlowPower");
 
         DrawRenderSection(ref renderOpen, mat);
@@ -427,9 +402,9 @@ public class BlueysTextureGUI : ShaderGUI
 
             string[] texProps = new string[]
             {
-                "_MainTex", "_DetailTex", "_BumpMap", "_EmissionMap",
-                "_ReflectionMap", "_OcclusionMap", "_MetallicMap", "_SmoothnessMap",
-                "_MatcapTex", "_GradientTex"
+                "_MainTex", "_DetailTex", "_BumpMap", "_EmissionMap", "_EmissionMask",
+                "_OcclusionMap", "_MetallicMap", "_SmoothnessMap",
+                "_MatcapTex", "_GradientTex", "_RimMask"
             };
 
             foreach (string prop in texProps)
@@ -487,19 +462,24 @@ public class BlueysTextureGUI : ShaderGUI
             DrawBodyStart();
 
             int keywordCount = 0;
-            if (mat.IsKeywordEnabled("_USE_TEXTURE_BOOST")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_TOON_LIGHTING")) keywordCount++;
             if (mat.IsKeywordEnabled("_USE_DETAIL")) keywordCount++;
             if (mat.IsKeywordEnabled("_USE_NORMAL")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_WET_SHINE")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_EDGE_GLOW")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_DEPTH")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_INNER_GLOW")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_EMISSION")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_REFLECTION")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_RIM_LIGHT")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_FRESNEL")) keywordCount++;
             if (mat.IsKeywordEnabled("_USE_MATCAP")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_GRADIENT")) keywordCount++;
-            if (mat.IsKeywordEnabled("_USE_DISSOLVE")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_FAKE_LIGHT")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_EMISSION")) keywordCount++;
             if (mat.IsKeywordEnabled("_USE_OUTLINE")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_DISSOLVE")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_GRADIENT")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_DECAL")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_STENCIL")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_AUDIOLINK")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_IRIDESCENT")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_GLITTER")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_PARALLAX")) keywordCount++;
+            if (mat.IsKeywordEnabled("_USE_SHADE_RAMP")) keywordCount++;
 
             EditorGUILayout.LabelField("Active Keywords", keywordCount.ToString());
             EditorGUILayout.LabelField("Shader", mat.shader.name);
@@ -574,100 +554,79 @@ public class BlueysTextureGUI : ShaderGUI
         switch (preset)
         {
             case "Wet Fur":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.9f);
-                mat.SetFloat("_SpecularStrength", 0.8f);
                 mat.SetFloat("_MetallicStrength", 0.1f);
-                mat.SetFloat("_UseTextureBoost", 1);
                 mat.SetFloat("_Brightness", 1.1f);
                 mat.SetFloat("_Contrast", 1.2f);
                 mat.SetFloat("_Saturation", 0.9f);
                 mat.SetFloat("_Vibrance", 0.3f);
+                mat.SetFloat("_UseRimLight", 1);
+                mat.SetFloat("_RimStrength", 1.5f);
                 break;
             case "Plastic":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.7f);
-                mat.SetFloat("_SpecularStrength", 0.5f);
-                mat.SetFloat("_MetallicStrength", 0);
-                mat.SetFloat("_UseTextureBoost", 1);
+                mat.SetFloat("_MetallicStrength", 0f);
                 mat.SetFloat("_Brightness", 1.0f);
                 mat.SetFloat("_Contrast", 1.1f);
                 mat.SetFloat("_Saturation", 1.2f);
                 mat.SetFloat("_Vibrance", 0.1f);
                 break;
             case "Rubber":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.3f);
-                mat.SetFloat("_SpecularStrength", 0.2f);
-                mat.SetFloat("_MetallicStrength", 0);
-                mat.SetFloat("_UseTextureBoost", 0);
+                mat.SetFloat("_MetallicStrength", 0f);
+                mat.SetFloat("_Brightness", 1.0f);
+                mat.SetFloat("_Contrast", 1.0f);
                 break;
             case "Latex":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.95f);
-                mat.SetFloat("_SpecularStrength", 0.9f);
-                mat.SetFloat("_MetallicStrength", 0);
-                mat.SetFloat("_UseTextureBoost", 1);
+                mat.SetFloat("_MetallicStrength", 0f);
                 mat.SetFloat("_Brightness", 1.1f);
                 mat.SetFloat("_Contrast", 1.1f);
                 mat.SetFloat("_Vibrance", 0.2f);
-                mat.SetFloat("_UseEdgeGlow", 1);
+                mat.SetFloat("_UseRimLight", 1);
                 mat.SetFloat("_RimStrength", 1.5f);
                 break;
             case "Metal":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.9f);
-                mat.SetFloat("_SpecularStrength", 0.7f);
                 mat.SetFloat("_MetallicStrength", 1.0f);
-                mat.SetFloat("_UseReflection", 1);
-                mat.SetFloat("_ReflectionStrength", 0.6f);
-                mat.SetFloat("_UseTextureBoost", 1);
                 mat.SetFloat("_Brightness", 1.0f);
                 mat.SetFloat("_Contrast", 1.1f);
                 mat.SetFloat("_Saturation", 0.7f);
                 break;
             case "Skin":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.4f);
-                mat.SetFloat("_SpecularStrength", 0.3f);
-                mat.SetFloat("_MetallicStrength", 0);
-                mat.SetFloat("_UseTextureBoost", 1);
+                mat.SetFloat("_MetallicStrength", 0f);
                 mat.SetFloat("_Brightness", 1.05f);
                 mat.SetFloat("_Contrast", 1.05f);
                 mat.SetFloat("_Saturation", 0.9f);
                 mat.SetFloat("_Vibrance", 0.1f);
                 break;
             case "Toon":
-                mat.SetFloat("_UseTextureBoost", 1);
+                mat.SetFloat("_UseToonLighting", 1);
+                mat.SetFloat("_UseCelShading", 1);
                 mat.SetFloat("_Contrast", 1.8f);
                 mat.SetFloat("_Brightness", 1.0f);
                 mat.SetFloat("_Saturation", 1.5f);
                 mat.SetFloat("_Sharpness", 1.0f);
-                mat.SetFloat("_UseWetShine", 0);
+                mat.SetFloat("_Smoothness", 0f);
                 break;
             case "Glow":
                 mat.SetFloat("_UseEmission", 1);
                 mat.SetFloat("_EmissionStrength", 2.0f);
                 mat.SetFloat("_FinalGlowPower", 1.5f);
-                mat.SetFloat("_UseEdgeGlow", 1);
+                mat.SetFloat("_UseRimLight", 1);
                 mat.SetFloat("_RimStrength", 2.0f);
-                mat.SetFloat("_UseTextureBoost", 1);
                 mat.SetFloat("_Brightness", 1.2f);
                 break;
             case "Matte":
-                mat.SetFloat("_UseWetShine", 0);
-                mat.SetFloat("_Smoothness", 0);
-                mat.SetFloat("_SpecularStrength", 0);
-                mat.SetFloat("_UseTextureBoost", 1);
+                mat.SetFloat("_Smoothness", 0f);
+                mat.SetFloat("_MetallicStrength", 0f);
                 mat.SetFloat("_Brightness", 1.0f);
                 mat.SetFloat("_Contrast", 1.0f);
                 break;
             case "Fabric":
-                mat.SetFloat("_UseWetShine", 1);
                 mat.SetFloat("_Smoothness", 0.2f);
-                mat.SetFloat("_SpecularStrength", 0.1f);
-                mat.SetFloat("_MetallicStrength", 0);
-                mat.SetFloat("_UseTextureBoost", 1);
+                mat.SetFloat("_MetallicStrength", 0f);
                 mat.SetFloat("_Brightness", 1.0f);
                 mat.SetFloat("_Contrast", 1.1f);
                 mat.SetFloat("_Saturation", 0.9f);
@@ -800,22 +759,23 @@ public class BlueysTextureGUI : ShaderGUI
             EditorGUI.indentLevel++;
 
             DrawProp(editor, props, "_EmissionMap");
+            DrawProp(editor, props, "_EmissionMask");
             DrawProp(editor, props, "_EmissionColor");
             DrawProp(editor, props, "_EmissionStrength");
 
             if (mat.GetFloat("_UseEmission") > 0.5f)
             {
                 EditorGUILayout.LabelField("Pulse Animation");
-                DrawProp(editor, props, "_PulseSpeed");
-                DrawProp(editor, props, "_PulseMin");
+                DrawProp(editor, props, "_EmissionPulseSpeed");
+                DrawProp(editor, props, "_EmissionPulseMin");
 
                 EditorGUILayout.LabelField("Flicker Effect");
-                DrawProp(editor, props, "_FlickerSpeed");
-                DrawProp(editor, props, "_FlickerIntensity");
+                DrawProp(editor, props, "_EmissionFlickerSpeed");
+                DrawProp(editor, props, "_EmissionFlickerIntensity");
 
                 EditorGUILayout.LabelField("Scrolling Emission");
-                DrawProp(editor, props, "_ScrollSpeed");
-                DrawProp(editor, props, "_ScrollDirection");
+                DrawProp(editor, props, "_EmissionScrollSpeed");
+                DrawProp(editor, props, "_EmissionScrollDirection");
             }
 
             EditorGUI.indentLevel--;
@@ -825,6 +785,60 @@ public class BlueysTextureGUI : ShaderGUI
         EditorGUILayout.EndVertical();
         EditorGUILayout.Space(5);
     }
+
+    void DrawShadingSection(MaterialEditor editor, MaterialProperty[] props, ref bool open, Material mat)
+    {
+        EditorGUILayout.BeginVertical();
+        open = DrawHeaderStrip(open, "Shading", true, mat.GetFloat("_UseToonLighting") > 0.5f, FindProperty("_UseToonLighting", props, false));
+
+        if (open)
+        {
+            DrawBodyStart();
+            EditorGUI.indentLevel++;
+
+            DrawProp(editor, props, "_UseCelShading");
+            DrawProp(editor, props, "_ShadowColor");
+            DrawProp(editor, props, "_ShadowStrength");
+            DrawProp(editor, props, "_ShadowThreshold");
+            DrawProp(editor, props, "_ShadowSmoothness");
+            DrawProp(editor, props, "_ToonLightDir");
+
+            DrawToggleSection(editor, props, ref shadeRampOpen, "Shade Ramp", "_UseShadeRamp",
+                "_ShadeRampTex");
+
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+        }
+
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.Space(5);
+    }
+
+    void DrawRimLightSection(MaterialEditor editor, MaterialProperty[] props, ref bool open, Material mat)
+    {
+        EditorGUILayout.BeginVertical();
+        open = DrawHeaderStrip(open, "Rim Light", true, mat.GetFloat("_UseRimLight") > 0.5f, FindProperty("_UseRimLight", props, false));
+
+        if (open)
+        {
+            DrawBodyStart();
+            EditorGUI.indentLevel++;
+
+            DrawProp(editor, props, "_RimColor");
+            DrawProp(editor, props, "_RimPower");
+            DrawProp(editor, props, "_RimStrength");
+            DrawProp(editor, props, "_RimWidth");
+            DrawProp(editor, props, "_RimMask");
+
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+        }
+
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.Space(5);
+    }
+
+    bool shadeRampOpen = false;
 
     void DrawRenderSection(ref bool open, Material mat)
     {
@@ -997,12 +1011,26 @@ public class BlueysTextureGUI : ShaderGUI
             case "_Gamma": return "Adjusts gamma/brightness curve.";
             case "_Vibrance": return "Intelligently boosts colour saturation.";
             case "_Sharpness": return "Enhances edge detail.";
+            case "_ShadowColor": return "Colour tinted onto shadowed areas in toon mode.";
+            case "_ShadowStrength": return "How strongly shadows affect the surface colour.";
+            case "_ShadowThreshold": return "Angle threshold for shadow transition.";
+            case "_ShadowSmoothness": return "Smoothness of the shadow transition edge.";
+            case "_ToonLightDir": return "World-space direction the toon light comes from.";
             case "_BumpMap": return "Normal map for surface detail.";
             case "_BumpStrength": return "Strength of the normal map effect.";
             case "_EmissionMap": return "Texture that defines emission areas.";
+            case "_EmissionMask": return "Mask texture for emission areas.";
+            case "_EmissionColor": return "Colour of the emission.";
             case "_EmissionStrength": return "Brightness of the emission.";
+            case "_EmissionPulseSpeed": return "Speed of the emission pulse animation.";
+            case "_EmissionPulseMin": return "Minimum brightness during pulse animation.";
+            case "_EmissionFlickerSpeed": return "Speed of the emission flicker effect.";
+            case "_EmissionFlickerIntensity": return "Intensity of the emission flicker effect.";
+            case "_EmissionScrollSpeed": return "Speed of the scrolling emission effect.";
+            case "_EmissionScrollDirection": return "Direction of the scrolling emission effect.";
             case "_RimPower": return "How tight the edge glow is.";
             case "_RimStrength": return "Brightness of the edge glow.";
+            case "_RimMask": return "Mask texture for rim light areas.";
             case "_OutlineWidth": return "Width of the outline effect.";
             case "_DissolveAmount": return "How much of the material is dissolved.";
             default: return "";
@@ -1015,18 +1043,15 @@ public class BlueysTextureGUI : ShaderGUI
         mainOpen = EditorPrefs.GetBool(key + "mainOpen", true);
         transparencyOpen = EditorPrefs.GetBool(key + "transparencyOpen", true);
         textureOpen = EditorPrefs.GetBool(key + "textureOpen", true);
-        detailOpen = EditorPrefs.GetBool(key + "detailOpen", false);
+        toonOpen = EditorPrefs.GetBool(key + "toonOpen", false);
+        rimOpen = EditorPrefs.GetBool(key + "rimOpen", false);
         normalOpen = EditorPrefs.GetBool(key + "normalOpen", false);
-        shineOpen = EditorPrefs.GetBool(key + "shineOpen", true);
-        edgeOpen = EditorPrefs.GetBool(key + "edgeOpen", true);
-        depthOpen = EditorPrefs.GetBool(key + "depthOpen", false);
-        innerOpen = EditorPrefs.GetBool(key + "innerOpen", true);
+        materialOpen = EditorPrefs.GetBool(key + "materialOpen", false);
         emissionOpen = EditorPrefs.GetBool(key + "emissionOpen", false);
-        reflectionOpen = EditorPrefs.GetBool(key + "reflectionOpen", false);
+        detailOpen = EditorPrefs.GetBool(key + "detailOpen", false);
         matcapOpen = EditorPrefs.GetBool(key + "matcapOpen", false);
         gradientOpen = EditorPrefs.GetBool(key + "gradientOpen", false);
-        dissolveOpen = EditorPrefs.GetBool(key + "dissolveOpen", false);
-        outlineOpen = EditorPrefs.GetBool(key + "outlineOpen", false);
+        shadeRampOpen = EditorPrefs.GetBool(key + "shadeRampOpen", false);
         finalOpen = EditorPrefs.GetBool(key + "finalOpen", false);
         renderOpen = EditorPrefs.GetBool(key + "renderOpen", false);
     }
@@ -1037,18 +1062,15 @@ public class BlueysTextureGUI : ShaderGUI
         EditorPrefs.SetBool(key + "mainOpen", mainOpen);
         EditorPrefs.SetBool(key + "transparencyOpen", transparencyOpen);
         EditorPrefs.SetBool(key + "textureOpen", textureOpen);
-        EditorPrefs.SetBool(key + "detailOpen", detailOpen);
+        EditorPrefs.SetBool(key + "toonOpen", toonOpen);
+        EditorPrefs.SetBool(key + "rimOpen", rimOpen);
         EditorPrefs.SetBool(key + "normalOpen", normalOpen);
-        EditorPrefs.SetBool(key + "shineOpen", shineOpen);
-        EditorPrefs.SetBool(key + "edgeOpen", edgeOpen);
-        EditorPrefs.SetBool(key + "depthOpen", depthOpen);
-        EditorPrefs.SetBool(key + "innerOpen", innerOpen);
+        EditorPrefs.SetBool(key + "materialOpen", materialOpen);
         EditorPrefs.SetBool(key + "emissionOpen", emissionOpen);
-        EditorPrefs.SetBool(key + "reflectionOpen", reflectionOpen);
+        EditorPrefs.SetBool(key + "detailOpen", detailOpen);
         EditorPrefs.SetBool(key + "matcapOpen", matcapOpen);
         EditorPrefs.SetBool(key + "gradientOpen", gradientOpen);
-        EditorPrefs.SetBool(key + "dissolveOpen", dissolveOpen);
-        EditorPrefs.SetBool(key + "outlineOpen", outlineOpen);
+        EditorPrefs.SetBool(key + "shadeRampOpen", shadeRampOpen);
         EditorPrefs.SetBool(key + "finalOpen", finalOpen);
         EditorPrefs.SetBool(key + "renderOpen", renderOpen);
     }
