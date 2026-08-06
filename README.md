@@ -1,90 +1,175 @@
 # Blueys Texture
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Alang0991/blueys-texture/main/.github/banner.png" alt="Blueys Texture Banner" width="100%">
-</p>
+> A modern shader package for VRChat creators.
 
-<p align="center">
-  <a href="https://github.com/Alang0991/blueys-texture/releases">
-    <img src="https://img.shields.io/github/v/release/Alang0991/blueys-texture?style=for-the-badge&label=Latest%20Release">
-  </a>
-  <img src="https://img.shields.io/badge/Unity-2022.3%2B-black?style=for-the-badge">
-  <img src="https://img.shields.io/badge/VRChat-PC%20Only-blue?style=for-the-badge">
-  <img src="https://img.shields.io/badge/VCC-Compatible-7B68EE?style=for-the-badge">
-  <img src="https://img.shields.io/github/downloads/Alang0991/blueys-texture/total?style=for-the-badge">
-  <img src="https://img.shields.io/github/license/Alang0991/blueys-texture?style=for-the-badge">
-</p>
+Blueys Texture is a professional shader package built specifically for VRChat creators using Unity 2022 and VRChat Creator Companion.
 
-<p align="center">
-
-# Modern Texture Shaders for VRChat
-
-Beautiful materials. Powerful controls. Professional workflow.
-
-Designed specifically for **VRChat creators** who want high-quality textures without fighting their shader.
-
-</p>
+It provides powerful texture enhancement, lighting, rendering, and material editing tools through a clean custom inspector while remaining easy to use for both beginners and experienced creators.
 
 ---
 
-## ✨ Why Blueys Texture?
+## Features
 
-Blueys Texture is a modern shader package built from the ground up for VRChat creators.
+### 🎨 Image Controls
 
-Instead of overwhelming you with hundreds of random settings, Blueys Texture focuses on making powerful features easy to use through a clean, professional material inspector.
+- Brightness
+- Contrast
+- Saturation
+- Hue Shift
+- Gamma
+- Vibrance
+- Sharpness
+- Tint
 
-Whether you're creating clothing, accessories, decals, avatars or full character textures, Blueys Texture gives you the tools to create beautiful materials in minutes.
+### 🖌 Texture System
 
-### Designed for
+- Main Texture
+- Detail Texture
+- Overlay Texture
+- UV Controls
+- Independent Tiling
+- Independent Offset
 
-- 👕 Clothing Creators
-- 🐺 Avatar Creators
-- 🎨 Texture Artists
-- 🦊 Furry Creators
-- 🎮 VRChat Worlds
-- 🛠 Commission Artists
+### 💡 Lighting
+
+- Toon Shading
+- Rim Lighting
+- Wet Shine
+- Reflection
+- Improved Fresnel
+
+### ✨ Effects
+
+- Emission
+- Pulse Animation
+- Flicker Animation
+- Scroll Animation
+- Gradient
+- Dissolve
+- Outline
+- Matcap
+
+### 🧱 Surface
+
+- Metallic Maps
+- Smoothness Maps
+- Ambient Occlusion
+- Normal Maps
+
+### 🛠 Rendering
+
+- Transparency
+- Alpha Controls
+- Double Sided Rendering
+- Render Queue
+- Edge Alpha Boost
 
 ---
 
-# 🖼 Gallery
+## Included Shaders
 
-> *(Replace these with screenshots)*
-
-| Material Inspector | Avatar Example |
-|-------------------|----------------|
-| ![](docs/images/gui.png) | ![](docs/images/avatar.png) |
-
-| Emission | Dissolve |
-|----------|-----------|
-| ![](docs/images/emission.png) | ![](docs/images/dissolve.png) |
+| Shader | Purpose |
+|---------|---------|
+| **BlueysTexture** | Full featured shader |
+| **BlueysTextureSimple** | Lightweight shader |
 
 ---
 
-# ⭐ Highlights
+## Custom Inspector
 
-✅ Custom Professional Material Inspector
+Blueys Texture includes a fully custom material inspector featuring:
 
-✅ Built for VRChat
-
-✅ VCC Package Support
-
-✅ PC Optimised
-
-✅ Hundreds of Material Controls
-
-✅ Modular Feature System
-
-✅ Shader Keyword Optimisation
-
-✅ Beginner Friendly
+- Search
+- Categories
+- Foldout sections
+- Tooltips
+- Material presets
+- Performance information
+- Texture information
+- Copy & Paste settings
+- Reset controls
+- Material validation
 
 ---
 
-# 📦 Installation
-
-## Install through VCC
+## Installation
 
 Add the following repository to VRChat Creator Companion.
 
 ```text
 https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
+```
+
+Open your project.
+
+Install **Blueys Texture**.
+
+Create a material.
+
+Select one of the included shaders.
+
+Done.
+
+---
+
+## Package Contents
+
+```text
+Runtime/
+├── Shaders/
+├── Materials/
+└── Textures/
+
+Editor/
+├── BlueysTextureGUI.cs
+└── BlueysTextureSimpleGUI.cs
+```
+
+---
+
+## Compatibility
+
+| Component | Supported |
+|-----------|-----------|
+| Unity | 2022.3+ |
+| VRChat SDK | Latest |
+| VCC | Latest |
+| Platform | PC |
+| Quest | ✖ |
+
+---
+
+## Version
+
+Current Version: **1.2.0**
+
+---
+
+## Changelog
+
+See:
+
+- CHANGELOG.md
+
+---
+
+## Roadmap
+
+### Planned
+
+- More blend modes
+- Advanced masking
+- Better lighting
+- More presets
+- Performance improvements
+- Additional material workflows
+
+---
+
+## License
+
+MIT License
+
+---
+
+Made with 💙 for the VRChat Community.
