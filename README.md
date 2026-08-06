@@ -1,165 +1,90 @@
 # Blueys Texture
 
-Banner Image
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Alang0991/blueys-texture/main/.github/banner.png" alt="Blueys Texture Banner" width="100%">
+</p>
 
-Badges
+<p align="center">
+  <a href="https://github.com/Alang0991/blueys-texture/releases">
+    <img src="https://img.shields.io/github/v/release/Alang0991/blueys-texture?style=for-the-badge&label=Latest%20Release">
+  </a>
+  <img src="https://img.shields.io/badge/Unity-2022.3%2B-black?style=for-the-badge">
+  <img src="https://img.shields.io/badge/VRChat-PC%20Only-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/VCC-Compatible-7B68EE?style=for-the-badge">
+  <img src="https://img.shields.io/github/downloads/Alang0991/blueys-texture/total?style=for-the-badge">
+  <img src="https://img.shields.io/github/license/Alang0991/blueys-texture?style=for-the-badge">
+</p>
 
-Professional texture shaders for VRChat with a modern inspector, advanced material controls, and creator-friendly workflows.
+<p align="center">
 
----
+# Modern Texture Shaders for VRChat
 
-Table of Contents
+Beautiful materials. Powerful controls. Professional workflow.
 
-- Features
-- Screenshots
-- Installation
-- Quick Start
-- Shaders
-- Inspector
-- Performance
-- Requirements
-- FAQ
-- Roadmap
-- Changelog
-- Contributing
-- License
+Designed specifically for **VRChat creators** who want high-quality textures without fighting their shader.
 
----
-
-Screenshots
-
-(Inspector)
-
-(Material Example)
-
-(Emission)
-
-(Outline)
-
-(Dissolve)
+</p>
 
 ---
 
-Why Blueys Texture?
+## ✨ Why Blueys Texture?
 
-Short explanation of what makes it different from other shaders.
+Blueys Texture is a modern shader package built from the ground up for VRChat creators.
 
----
+Instead of overwhelming you with hundreds of random settings, Blueys Texture focuses on making powerful features easy to use through a clean, professional material inspector.
 
-Shader Comparison
+Whether you're creating clothing, accessories, decals, avatars or full character textures, Blueys Texture gives you the tools to create beautiful materials in minutes.
 
-| Feature | BlueysTexture | BlueysTextureSimple |
-|----------|---------------|---------------------|
-| Advanced Lighting | ✅ | ❌ |
-| Emission | ✅ | ✅ |
-| Outline | ✅ | ❌ |
-| Dissolve | ✅ | ❌ |
-| Matcap | ✅ | ✅ |
-| AO | ✅ | ✅ |
-| Performance | High | Very High |
+### Designed for
 
----
-
-Installation
-
-VCC
-
-Manual
-
-Git URL
+- 👕 Clothing Creators
+- 🐺 Avatar Creators
+- 🎨 Texture Artists
+- 🦊 Furry Creators
+- 🎮 VRChat Worlds
+- 🛠 Commission Artists
 
 ---
 
-Quick Start
+# 🖼 Gallery
 
-Create Material
+> *(Replace these with screenshots)*
 
-Select Shader
+| Material Inspector | Avatar Example |
+|-------------------|----------------|
+| ![](docs/images/gui.png) | ![](docs/images/avatar.png) |
 
-Assign Texture
-
-Done
-
----
-
-Features
-
-Each feature gets:
-
-✔ Screenshot
-
-✔ Description
-
-✔ Supported options
+| Emission | Dissolve |
+|----------|-----------|
+| ![](docs/images/emission.png) | ![](docs/images/dissolve.png) |
 
 ---
 
-Inspector
+# ⭐ Highlights
 
-Large screenshots showing every category.
+✅ Custom Professional Material Inspector
 
-Explain every section.
+✅ Built for VRChat
 
----
+✅ VCC Package Support
 
-Performance
+✅ PC Optimised
 
-Recommended texture sizes
+✅ Hundreds of Material Controls
 
-Shader keyword optimisation
+✅ Modular Feature System
 
-GPU recommendations
+✅ Shader Keyword Optimisation
 
-VRChat compatibility
-
----
-
-Roadmap
-
-v1.3.0
-
-v1.4.0
-
-v2.0.0
+✅ Beginner Friendly
 
 ---
 
-FAQ
+# 📦 Installation
 
-Why is my texture pink?
+## Install through VCC
 
-Why is emission not working?
+Add the following repository to VRChat Creator Companion.
 
-How do I use transparency?
-
-Why doesn't Quest support this?
-
----
-
-Troubleshooting
-
-Compilation errors
-
-Missing package
-
-Broken materials
-
-VCC problems
-
-Unity version mismatch
-
----
-
-Contributing
-
-How to report bugs
-
-Feature requests
-
-Pull requests
-
----
-
-License
-
-MIT
+```text
+https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
