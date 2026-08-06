@@ -16,6 +16,7 @@
             "name": "Blueys"
           },
           "vpmDependencies": {},
+          "zipSHA256": "D0215C24DA6C5774C71BCA68E471AD5D7442FE89CF90BF81052DB46F06C20363",
           "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.1.0/com.blueys.texture-1.1.0.zip"
         },
         "1.0.3": {
