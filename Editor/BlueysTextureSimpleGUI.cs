@@ -117,7 +117,7 @@ public class BlueysTextureSimpleGUI : ShaderGUI
         title.fontSize = 20;
         title.alignment = TextAnchor.MiddleCenter;
         title.normal.textColor = accent;
-        GUI.Label(r, "Blueys Texture Simple", title);
+        GUI.Label(r, "BlueShade Studio", title);
 
         Rect line = new Rect(r.x, r.yMax - 3, r.width, 3);
         EditorGUI.DrawRect(line, accent);
@@ -763,7 +763,7 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
     void LoadSectionStates(Material mat)
     {
-        string key = "BlueysTextureSimple_" + mat.GetInstanceID() + "_";
+        string key = "BlueShadeStudio_" + mat.GetInstanceID() + "_";
         mainOpen = EditorPrefs.GetBool(key + "mainOpen", true);
         lookOpen = EditorPrefs.GetBool(key + "lookOpen", true);
         overlayOpen = EditorPrefs.GetBool(key + "overlayOpen", true);
@@ -779,7 +779,7 @@ public class BlueysTextureSimpleGUI : ShaderGUI
 
     void SaveSectionStates(Material mat)
     {
-        string key = "BlueysTextureSimple_" + mat.GetInstanceID() + "_";
+        string key = "BlueShadeStudio_" + mat.GetInstanceID() + "_";
         EditorPrefs.SetBool(key + "mainOpen", mainOpen);
         EditorPrefs.SetBool(key + "lookOpen", lookOpen);
         EditorPrefs.SetBool(key + "overlayOpen", overlayOpen);

@@ -1,4 +1,4 @@
-Shader "Blueys/BlueysTextureSimple"
+Shader "Blueys/BlueShade Studio"
 {
     Properties
     {
