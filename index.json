@@ -6,6 +6,30 @@
   "packages": {
     "com.blueys.texture": {
       "versions": {
+        "1.1.0": {
+          "name": "com.blueys.texture",
+          "displayName": "Blueys Texture",
+          "version": "1.1.0",
+          "unity": "2022.3",
+          "description": "Professional VRChat texture shaders with emission, effects, and custom material inspectors.",
+          "author": {
+            "name": "Blueys"
+          },
+          "vpmDependencies": {},
+          "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.1.0/com.blueys.texture-1.1.0.zip"
+        },
+        "1.0.3": {
+          "name": "com.blueys.texture",
+          "displayName": "Blueys Texture",
+          "version": "1.0.3",
+          "unity": "2022.3",
+          "description": "Professional VRChat texture shaders with emission, effects, and custom material inspectors.",
+          "author": {
+            "name": "Blueys"
+          },
+          "vpmDependencies": {},
+          "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.0.3/com.blueys.texture-1.0.3.zip"
+        },
         "1.0.2": {
           "name": "com.blueys.texture",
           "displayName": "Blueys Texture",
@@ -16,7 +40,7 @@
             "name": "Blueys"
           },
           "vpmDependencies": {},
-          "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.0.2/com.blueys.texture-1.0.1.zip"
+          "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.0.2/com.blueys.texture-1.0.2.zip"
         },
         "1.0.1": {
           "name": "com.blueys.texture",
