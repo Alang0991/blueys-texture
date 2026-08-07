@@ -64,8 +64,7 @@ public class BlueShadeStudioLiteGUI : ShaderGUI
             new LiteLookModule(),
             new LiteLightingModule(),
             new LiteEffectsModule(),
-            new PresetsModule(),
-            new OptimizationModule()
+            new PresetsModule()
         };
 
         foreach (var module in modules)
@@ -160,7 +159,6 @@ public class BlueShadeStudioLiteGUI : ShaderGUI
             case 2: DrawModule(modules[2]); break;
             case 3: DrawModule(modules[3]); break;
             case 4: DrawModule(modules[4]); break;
-            case 5: DrawModule(modules[5]); break;
         }
     }
 

@@ -7,7 +7,7 @@ using BlueShadeStudio.Modules;
 public class BlueShadeStudioGUI : ShaderGUI
 {
     private int tabIndex = 0;
-    private readonly string[] tabs = { "Main", "Lighting", "Effects", "Rendering", "Optimization" };
+    private readonly string[] tabs = { "Main", "Lighting", "Effects", "Rendering", "Presets", "Optimization" };
     private readonly string[] tabIcons = { "◇", "☀", "✦", "⚙", "⚡" };
 
     private string searchQuery = "";
