@@ -1,11 +1,24 @@
 {
-  "name": "Blueys Repo",
-  "id": "com.blueys.repo",
+  "name": "BlueShade Studio",
+  "id": "com.blueshade.repo",
   "url": "https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json",
-  "author": "Blueys",
+  "author": "BlueShade Studio",
   "packages": {
-    "com.blueys.texture": {
+    "com.blueshade.studio": {
       "versions": {
+        "1.2.0": {
+          "name": "com.blueshade.studio",
+          "displayName": "BlueShade Studio",
+          "version": "1.2.0",
+          "unity": "2022.3",
+          "description": "Professional VRChat shader suite with emission, effects, PBR, and custom material inspectors.",
+          "author": {
+            "name": "BlueShade Studio"
+          },
+          "vpmDependencies": {},
+          "zipSHA256": "1AE0CE90AB208F48418D5C2FC73A411028FB3B53D346D5FA388059E6F18C16DA",
+          "url": "https://github.com/Alang0991/blueys-texture/releases/download/v1.2.0/com.blueshade.studio-1.2.0.zip"
+        },
         "1.1.2": {
           "name": "com.blueys.texture",
           "displayName": "Blueys Texture",

@@ -1,4 +1,4 @@
-Shader "Blueys/BlueShade Studio"
+Shader "BlueShade/Studio Lite"
 {
     Properties
     {
@@ -266,5 +266,5 @@ Shader "Blueys/BlueShade Studio"
     }
 
     FallBack "Diffuse"
-    CustomEditor "BlueysTextureSimpleGUI"
+    CustomEditor "BlueShadeStudioLiteGUI"
 }

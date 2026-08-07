@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
-public static class BlueysTextureUtils
+public static class BlueShadeStudioUtils
 {
     public static string FormatVRAM(Texture tex)
     {
@@ -83,11 +83,11 @@ public static class BlueysTextureUtils
         return "High (Consider simplifying)";
     }
 
-    public static string GetPerformanceColor(int keywordCount)
+    public static Color GetPerformanceColor(int keywordCount)
     {
-        if (keywordCount <= 3) return "#44ff44";
-        if (keywordCount <= 6) return "#ffaa00";
-        return "#ff4444";
+        if (keywordCount <= 3) return new Color(0.3f, 1f, 0.3f);
+        if (keywordCount <= 6) return new Color(1f, 0.7f, 0.2f);
+        return new Color(1f, 0.3f, 0.3f);
     }
 
     public static bool MatchesSearch(string text, string query)

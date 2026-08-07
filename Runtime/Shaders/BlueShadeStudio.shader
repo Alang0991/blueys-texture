@@ -1,4 +1,4 @@
-Shader "Blueys/BlueysTexture"
+Shader "BlueShade/Studio"
 {
     Properties
     {
@@ -383,5 +383,5 @@ Shader "Blueys/BlueysTexture"
     }
 
     FallBack "Transparent/Diffuse"
-    CustomEditor "BlueysTextureGUI"
+    CustomEditor "BlueShadeStudioGUI"
 }

@@ -1,4 +1,4 @@
-# Blueys Texture
+# BlueShade Studio
 
 <p align="left">
   <img src="https://img.shields.io/badge/VRChat-VCC-blue?style=flat-square">
@@ -32,13 +32,13 @@ https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
 2. Open your project
 3. Click Manage Project
 4. Open Packages
-5. Install Blueys Texture
+5. Install BlueShade Studio
 
 ---
 
 ## Features
 
-### BlueysTexture (Full Shader)
+### BlueShade/Studio (Full Shader)
 
 - **Texture Controls:** Tiling, offset, tint, brightness, contrast, saturation, hue shift, gamma, vibrance, sharpness
 - **Detail Overlay:** Detail texture with tiling and offset controls
@@ -57,7 +57,7 @@ https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
 - **Improved Fresnel:** Better edge detection system
 - **Transparency:** Advanced alpha handling with edge alpha boost
 
-### BlueysTextureSimple (Lightweight Shader)
+### BlueShade/Studio Lite (Lightweight Shader)
 
 - **Texture Controls:** Brightness, contrast, saturation, hue shift, gamma, vibrance, sharpness
 - **Metallic & Smoothness:** Full PBR support with map inputs
@@ -103,12 +103,12 @@ https://raw.githubusercontent.com/Alang0991/blueys-texture/main/index.json
 ```text
 Runtime/
 └── Shaders/
-    ├── BlueysTexture.shader
-    └── BlueysTextureSimple.shader
+    ├── BlueShadeStudio.shader
+    └── BlueShadeStudioLite.shader
 
 Editor/
-├── BlueysTextureGUI.cs
-└── BlueysTextureSimpleGUI.cs
+├── BlueShadeStudioGUI.cs
+└── BlueShadeStudioLiteGUI.cs
 ```
 
 ---
@@ -126,7 +126,7 @@ Editor/
 
 ## Version
 
-Current Version: **1.0.1**
+Current Version: **1.2.0**
 
 ---
 
@@ -138,7 +138,7 @@ https://github.com/Alang0991/blueys-texture
 
 ## Author
 
-**Blueys**
+**BlueShade Studio**
 
 Created for VRChat creators looking for simple but powerful texture shaders.
 

@@ -3,16 +3,16 @@ using UnityEngine;
 using UnityEditor;
 using System;
 
-public static class BlueysTexturePresets
+public static class BlueShadeStudioPresetManager
 {
-    private const string CustomPresetKey = "BlueysTexture_CustomPresets_";
+    private const string CustomPresetKey = "BlueShadeStudio_CustomPresets_";
     private const string MaxCustomPresets = 20;
 
     public static void ApplyPreset(Material mat, string presetName)
     {
         if (mat == null) return;
 
-        if (BlueysTextureBuiltinPresets.Presets.TryGetValue(presetName, out MaterialPreset preset))
+        if (BlueShadeStudioPresets.Presets.TryGetValue(presetName, out MaterialPreset preset))
         {
             ApplyPresetData(mat, preset.settings);
         }
@@ -21,7 +21,7 @@ public static class BlueysTexturePresets
             string customJson = EditorPrefs.GetString(CustomPresetKey + presetName, "");
             if (!string.IsNullOrEmpty(customJson))
             {
-                Dictionary<string, object> settings = BlueysTextureUtils.LoadPresetFromJson(customJson);
+                Dictionary<string, object> settings = BlueShadeStudioUtils.LoadPresetFromJson(customJson);
                 ApplyPresetData(mat, settings);
             }
         }
@@ -64,7 +64,7 @@ public static class BlueysTexturePresets
     public static string[] GetBuiltinPresetNames()
     {
         List<string> names = new List<string>();
-        foreach (var kvp in BlueysTextureBuiltinPresets.Presets)
+        foreach (var kvp in BlueShadeStudioPresets.Presets)
         {
             names.Add(kvp.Key);
         }
@@ -119,7 +119,7 @@ public static class BlueysTexturePresets
             }
         }
 
-        string json = BlueysTextureUtils.SavePresetToJson(settings);
+        string json = BlueShadeStudioUtils.SavePresetToJson(settings);
 
         int slot = FindEmptySlot();
         if (slot < 0)

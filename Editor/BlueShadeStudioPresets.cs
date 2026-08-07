@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class BlueysTextureBuiltinPresets
+public static class BlueShadeStudioPresets
 {
     public static readonly Dictionary<string, MaterialPreset> Presets = new Dictionary<string, MaterialPreset>
     {

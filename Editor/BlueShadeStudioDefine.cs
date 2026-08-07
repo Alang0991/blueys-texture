@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public static class BlueysTextureDefine
+public static class BlueShadeStudioDefine
 {
-    public const string PackageName = "com.blueys.texture";
-    public const string ShaderName = "Blueys/BlueysTexture";
-    public const string SimpleShaderName = "Blueys/BlueShade Studio";
+    public const string PackageName = "com.blueshade.studio";
+    public const string ShaderName = "BlueShade/Studio";
+    public const string SimpleShaderName = "BlueShade/Studio Lite";
     public const string Version = "1.1.1";
 
     public static readonly Color AccentColor = new Color(0.25f, 0.75f, 1f);
@@ -13,7 +13,7 @@ public static class BlueysTextureDefine
     public static readonly Color BodyColor = new Color(0.13f, 0.13f, 0.13f);
     public static readonly Color BannerBgColor = new Color(0.04f, 0.07f, 0.09f);
 
-    public const string SectionPrefix = "BlueysTexture_";
+    public const string SectionPrefix = "BlueShadeStudio_";
     public const string SimpleSectionPrefix = "BlueShadeStudio_";
 
     public static readonly string[] MainKeywords =

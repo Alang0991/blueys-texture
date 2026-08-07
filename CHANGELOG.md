@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to BlueysTexture will be documented in this file.
+All notable changes to BlueShade Studio will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -56,10 +56,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial release
-- BlueysTexture shader with full feature set
-- BlueysTextureSimple shader for lightweight use
-- Custom BlueysTextureGUI inspector
-- Custom BlueysTextureSimpleGUI inspector
+- BlueShade Studio shader with full feature set
+- BlueShade StudioSimple shader for lightweight use
+- Custom BlueShade StudioGUI inspector
+- Custom BlueShade StudioSimpleGUI inspector
 - Basic emission system
 - Basic rim glow
 - Basic transparency support
