@@ -31,8 +31,8 @@ Shader "Blueys/BlueShade"
         _BumpStrength ("Normal Strength", Range(0,2)) = 0.4
 
         [Toggle] _UseWetShine ("Wet Shine", Float) = 0
-        _Smoothness ("Smoothness", Range(0,1)) = 1
-        _SpecularStrength ("Specular Strength", Range(0,1)) = 0.5
+        _Smoothness ("Smoothness", Range(0,1)) = 0.5
+        _SpecularStrength ("Specular Strength", Range(0,1)) = 0.1
         _MetallicMap ("Metallic Map", 2D) = "black" {}
         _MetallicStrength ("Metallic Strength", Range(0,1)) = 0
         _SmoothnessMap ("Smoothness Map", 2D) = "black" {}
@@ -360,7 +360,7 @@ Shader "Blueys/BlueShade"
                 o.Specular = fixed3(metallic, metallic, metallic);
                 o.Specular.a = finalSmoothness;
             #else
-                o.Specular = fixed3(_SpecularStrength, _SpecularStrength, _SpecularStrength);
+                o.Specular = fixed3(0, 0, 0);
                 o.Specular.a = 0.5;
             #endif
 
