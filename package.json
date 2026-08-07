@@ -1,11 +1,11 @@
 {
-  "name": "com.blueshade.studio",
-  "displayName": "BlueShade Studio",
+  "name": "com.blueys.texture",
+  "displayName": "Blueys Texture",
   "version": "1.2.0",
-  "description": "Professional VRChat shader suite with emission, effects, PBR, and custom material inspectors.",
+  "description": "Professional VRChat texture shaders with emission, effects, and custom material inspectors.",
   "unity": "2022.3",
   "author": {
-    "name": "BlueShade Studio"
+    "name": "Blueys"
   },
   "vpmDependencies": {}
 }

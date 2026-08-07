@@ -1,4 +1,4 @@
-Shader "BlueShade/Studio"
+Shader "Blueys/BlueShade"
 {
     Properties
     {

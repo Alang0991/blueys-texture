@@ -2,10 +2,10 @@ using UnityEngine;
 
 public static class BlueShadeStudioDefine
 {
-    public const string PackageName = "com.blueshade.studio";
-    public const string ShaderName = "BlueShade/Studio";
-    public const string SimpleShaderName = "BlueShade/Studio Lite";
-    public const string Version = "1.1.1";
+    public const string PackageName = "com.blueys.texture";
+    public const string ShaderName = "Blueys/BlueShade";
+    public const string SimpleShaderName = "Blueys/BlueShade Lite";
+    public const string Version = "1.2.0";
 
     public static readonly Color AccentColor = new Color(0.25f, 0.75f, 1f);
     public static readonly Color HeaderOffColor = new Color(0.16f, 0.16f, 0.16f);
