@@ -17,16 +17,18 @@ Shader "Blueys/BlueShade Lite"
 
         _Smoothness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0
+        [Toggle(_USE_METALLIC_MAP)] _UseMetallicMap ("Use Metallic Map", Float) = 0
         _MetallicMap ("Metallic Map", 2D) = "black" {}
         _MetallicStrength ("Metallic Strength", Range(0,1)) = 0
+        [Toggle(_USE_SMOOTHNESS_MAP)] _UseSmoothnessMap ("Use Smoothness Map", Float) = 0
         _SmoothnessMap ("Smoothness Map", 2D) = "black" {}
         _SmoothnessStrength ("Smoothness Strength", Range(0,1)) = 0
 
-        [Toggle] _UseSolidOverlay ("Use Colour Overlay", Float) = 0
+        [Toggle(_USE_SOLID_OVERLAY)] _UseSolidOverlay ("Use Colour Overlay", Float) = 0
         _SolidColor ("Overlay Colour", Color) = (1,1,1,1)
         _SolidStrength ("Overlay Strength", Range(0,1)) = 0
 
-        [Toggle] _UseEmission ("Use Emission", Float) = 0
+        [Toggle(_USE_EMISSION)] _UseEmission ("Use Emission", Float) = 0
         _EmissionMap ("Emission Image", 2D) = "white" {}
         _EmissionMask ("Emission Mask", 2D) = "white" {}
         _EmissionColor ("Emission Colour", Color) = (0.2,0.7,1,1)
@@ -39,22 +41,23 @@ Shader "Blueys/BlueShade Lite"
         _ScrollSpeed ("Scroll Speed", Range(0,10)) = 0
         _ScrollDirection ("Scroll Direction", Range(0,360)) = 0
 
-        [Toggle] _UseRimGlow ("Use Rim Glow", Float) = 1
+        [Toggle(_USE_RIM_GLOW)] _UseRimGlow ("Use Rim Glow", Float) = 1
         _RimColor ("Rim Glow Colour", Color) = (0.35,0.8,1,1)
         _RimPower ("Rim Tightness", Range(0.5,10)) = 3
         _RimStrength ("Rim Strength", Range(0,10)) = 1
 
-        [Toggle] _UseCutout ("Use PNG Cutout Shape", Float) = 0
+        [Toggle(_USE_CUTOUT)] _UseCutout ("Use PNG Cutout Shape", Float) = 0
         _AlphaCutoff ("PNG Alpha Cutoff", Range(0,1)) = 0.05
 
-        [Toggle] _UseMatcap ("Matcap", Float) = 0
+        [Toggle(_USE_MATCAP)] _UseMatcap ("Matcap", Float) = 0
         _MatcapTex ("Matcap", 2D) = "black" {}
         _MatcapStrength ("Matcap Strength", Range(0,1)) = 0
 
-        [Toggle] _UseGradient ("Gradient", Float) = 0
+        [Toggle(_USE_GRADIENT)] _UseGradient ("Gradient", Float) = 0
         _GradientTex ("Gradient Texture", 2D) = "white" {}
         _GradientStrength ("Gradient Strength", Range(0,1)) = 0
 
+        [Toggle(_USE_OCCLUSION)] _UseOcclusion ("Ambient Occlusion", Float) = 0
         _OcclusionMap ("Occlusion Map", 2D) = "white" {}
         _OcclusionStrength ("Occlusion Strength", Range(0,1)) = 1
     }
@@ -77,10 +80,13 @@ Shader "Blueys/BlueShade Lite"
 
         #pragma multi_compile _USE_SOLID_OVERLAY _USE_SOLID_OVERLAY_OFF
         #pragma multi_compile _USE_EMISSION _USE_EMISSION_OFF
+        #pragma multi_compile _USE_METALLIC_MAP _USE_METALLIC_MAP_OFF
+        #pragma multi_compile _USE_SMOOTHNESS_MAP _USE_SMOOTHNESS_MAP_OFF
         #pragma multi_compile _USE_RIM_GLOW _USE_RIM_GLOW_OFF
         #pragma multi_compile _USE_CUTOUT _USE_CUTOUT_OFF
         #pragma multi_compile _USE_MATCAP _USE_MATCAP_OFF
         #pragma multi_compile _USE_GRADIENT _USE_GRADIENT_OFF
+        #pragma multi_compile _USE_OCCLUSION _USE_OCCLUSION_OFF
 
         sampler2D _MainTex;
         sampler2D _EmissionMap;
@@ -92,6 +98,8 @@ Shader "Blueys/BlueShade Lite"
         sampler2D _OcclusionMap;
 
         fixed4 _Color;
+        float4 _MainTiling;
+        float4 _MainOffset;
 
         half _Brightness;
         half _Contrast;
@@ -106,27 +114,23 @@ Shader "Blueys/BlueShade Lite"
         half _MetallicStrength;
         half _SmoothnessStrength;
 
-        half _UseSolidOverlay;
-        fixed4 _SolidColor;
         half _SolidStrength;
+        fixed4 _SolidColor;
 
-        half _UseEmission;
-        fixed4 _EmissionColor;
         half _EmissionStrength;
         half _EmissionUsesPNG;
         half _PulseSpeed;
         half _PulseMin;
         half _FlickerSpeed;
         half _FlickerIntensity;
+        fixed4 _EmissionColor;
         half _ScrollSpeed;
         half _ScrollDirection;
 
-        half _UseRimGlow;
-        fixed4 _RimColor;
         half _RimPower;
         half _RimStrength;
+        fixed4 _RimColor;
 
-        half _UseCutout;
         half _AlphaCutoff;
 
         half _MatcapStrength;
@@ -186,7 +190,9 @@ Shader "Blueys/BlueShade Lite"
 
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
-            fixed4 png = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+            // 1. Main Texture & UV — main PNG texture is the source of truth
+            fixed2 mainUV = IN.uv_MainTex * _MainTiling.xy + _MainOffset.xy;
+            fixed4 png = tex2D(_MainTex, mainUV) * _Color;
 
             #if _USE_CUTOUT
                 clip(png.a - _AlphaCutoff);
@@ -194,6 +200,7 @@ Shader "Blueys/BlueShade Lite"
 
             fixed3 col = png.rgb;
 
+            // 2. Texture Enhancement (always applied — PNG is the source of truth)
             col = ContrastAdjust(col, _Contrast);
             col = SaturationAdjust(col, _Saturation);
             col *= _Brightness;
@@ -201,10 +208,25 @@ Shader "Blueys/BlueShade Lite"
             col = GammaAdjust(col, _Gamma);
             col = VibranceAdjust(col, _Vibrance);
 
+            // Sharpness — unsharp mask sampled from the main texture (source of truth).
+            // Accumulate in half precision to avoid fixed-range saturation.
+            if (_Sharpness > 0.001)
+            {
+                half2 txs = _MainTex_TexelSize.xy;
+                half3 blurred = half3(tex2D(_MainTex, mainUV + half2(txs.x, 0)).rgb)
+                              + half3(tex2D(_MainTex, mainUV - half2(txs.x, 0)).rgb)
+                              + half3(tex2D(_MainTex, mainUV + half2(0, txs.y)).rgb)
+                              + half3(tex2D(_MainTex, mainUV - half2(0, txs.y)).rgb);
+                blurred *= 0.25;
+                col = lerp(blurred * _Color.rgb, col, 1.0 + _Sharpness);
+            }
+
+            // 3. Colour Overlay
             #if _USE_SOLID_OVERLAY
                 col = lerp(col, _SolidColor.rgb, _SolidStrength);
             #endif
 
+            // 4. Ambient Occlusion
             #if _USE_OCCLUSION
                 half occ = tex2D(_OcclusionMap, IN.uv_OcclusionMap).r;
                 col *= lerp(1.0, occ, _OcclusionStrength);
@@ -212,8 +234,15 @@ Shader "Blueys/BlueShade Lite"
 
             fixed3 emission = fixed3(0,0,0);
 
+            // 5. Emission
             #if _USE_EMISSION
-                fixed3 emissionImage = tex2D(_EmissionMap, IN.uv_MainTex).rgb;
+                fixed2 emitUV = IN.uv_MainTex;
+                if (_ScrollSpeed > 0)
+                {
+                    float rad = _ScrollDirection * 3.14159 / 180.0;
+                    emitUV += fixed2(cos(rad), sin(rad)) * _Time.y * _ScrollSpeed;
+                }
+                fixed3 emissionImage = tex2D(_EmissionMap, emitUV).rgb;
                 fixed3 emissionMask = tex2D(_EmissionMask, IN.uv_MainTex).rgb;
 
                 fixed3 emissionBase = lerp(emissionImage, emissionImage * png.rgb, _EmissionUsesPNG);
@@ -221,23 +250,21 @@ Shader "Blueys/BlueShade Lite"
 
                 emission *= _PulseSpeed > 0 ? _PulseMin + (1.0 - _PulseMin) * (0.5 + 0.5 * sin(_Time.y * _PulseSpeed * 6.28)) : 1.0;
                 emission *= _FlickerSpeed > 0 ? 1.0 - _FlickerIntensity * (0.5 + 0.5 * sin(_Time.y * _FlickerSpeed * 6.28)) * (0.5 + 0.5 * sin(_Time.y * _FlickerSpeed * 12.56)) : 1.0;
-
-                fixed2 scrollUV = IN.uv_MainTex;
-                float rad = _ScrollDirection * 3.14159 / 180.0;
-                scrollUV += fixed2(cos(rad), sin(rad)) * _Time.y * _ScrollSpeed;
-                emission *= tex2D(_EmissionMap, scrollUV).rgb;
             #endif
 
+            // 6. Rim Glow
             #if _USE_RIM_GLOW
                 half rim = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
                 emission += _RimColor.rgb * pow(rim, _RimPower) * _RimStrength;
             #endif
 
+            // 7. Matcap
             #if _USE_MATCAP
                 half2 matcapUV = o.Normal.xy * 0.5 + 0.5;
                 emission += tex2D(_MatcapTex, matcapUV).rgb * _MatcapStrength;
             #endif
 
+            // 8. Gradient
             #if _USE_GRADIENT
                 fixed3 gradTex = tex2D(_GradientTex, IN.uv_MainTex).rgb;
                 emission += gradTex * gradTex.r * _GradientStrength;
@@ -245,6 +272,7 @@ Shader "Blueys/BlueShade Lite"
 
             o.Albedo = saturate(col);
 
+            // 9. Metallic / Smoothness
             #if _USE_METALLIC_MAP
                 half metallic = tex2D(_MetallicMap, IN.uv_MetallicMap).r * _MetallicStrength;
                 o.Metallic = lerp(_Metallic, metallic, _MetallicStrength);

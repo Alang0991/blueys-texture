@@ -10,8 +10,8 @@ Shader "Blueys/BlueShade"
         _Color ("Texture Tint", Color) = (1,1,1,1)
         _Alpha ("Transparency", Range(0,1)) = 1
 
-        [Toggle] _UseTextureBoost ("Texture Enhancement", Float) = 0
-        _TextureStrength ("Texture Strength", Range(0,3)) = 1
+        [Toggle(_USE_TEXTURE_BOOST)] _UseTextureBoost ("Texture Enhancement", Float) = 0
+        _TextureStrength ("Texture Strength", Range(0,1)) = 1
         _Contrast ("Contrast", Range(0,3)) = 1
         _Brightness ("Brightness", Range(0,3)) = 1
         _Saturation ("Saturation", Range(0,3)) = 1
@@ -20,17 +20,17 @@ Shader "Blueys/BlueShade"
         _Vibrance ("Vibrance", Range(-1,1)) = 0
         _Sharpness ("Sharpness", Range(0,2)) = 0
 
-        [Toggle] _UseDetail ("Detail Overlay", Float) = 0
+        [Toggle(_USE_DETAIL)] _UseDetail ("Detail Overlay", Float) = 0
         _DetailTex ("Detail Texture", 2D) = "gray" {}
         _DetailStrength ("Detail Strength", Range(0,2)) = 0.2
         _DetailTiling ("Detail Tiling", Range(1,40)) = 8
         _DetailOffset ("Detail Offset", Vector) = (0,0,0,0)
 
-        [Toggle] _UseNormal ("Normal Map", Float) = 0
+        [Toggle(_USE_NORMAL)] _UseNormal ("Normal Map", Float) = 0
         [Normal] _BumpMap ("Normal Map", 2D) = "bump" {}
         _BumpStrength ("Normal Strength", Range(0,2)) = 0.4
 
-        [Toggle] _UseWetShine ("Wet Shine", Float) = 0
+        [Toggle(_USE_WET_SHINE)] _UseWetShine ("Wet Shine", Float) = 0
         _Smoothness ("Smoothness", Range(0,1)) = 0.5
         _SpecularStrength ("Specular Strength", Range(0,1)) = 0.1
         _MetallicMap ("Metallic Map", 2D) = "black" {}
@@ -38,22 +38,22 @@ Shader "Blueys/BlueShade"
         _SmoothnessMap ("Smoothness Map", 2D) = "black" {}
         _SmoothnessStrength ("Smoothness Strength", Range(0,1)) = 0
 
-        [Toggle] _UseEdgeGlow ("Edge Glow", Float) = 0
+        [Toggle(_USE_EDGE_GLOW)] _UseEdgeGlow ("Edge Glow", Float) = 0
         _RimColor ("Edge Glow Color", Color) = (0.35,0.9,1,1)
         _RimPower ("Edge Tightness", Range(0.5,8)) = 3
         _RimStrength ("Edge Strength", Range(0,8)) = 2
         _EdgeAlphaBoost ("Edge Alpha Boost", Range(0,0.5)) = 0.1
 
-        [Toggle] _UseDepth ("Deep Color", Float) = 0
+        [Toggle(_USE_DEPTH)] _UseDepth ("Deep Color", Float) = 0
         _DepthColor ("Deep Color", Color) = (0,0.16,0.75,1)
         _DepthStrength ("Deep Strength", Range(0,2)) = 0.5
 
-        [Toggle] _UseInnerGlow ("Inner Glow", Float) = 0
+        [Toggle(_USE_INNER_GLOW)] _UseInnerGlow ("Inner Glow", Float) = 0
         _InnerColor ("Inner Glow Color", Color) = (0.15,0.75,1,1)
         _InnerStrength ("Inner Strength", Range(0,5)) = 0.6
         _InnerPower ("Inner Softness", Range(0.5,8)) = 2
 
-        [Toggle] _UseEmission ("Emission Texture", Float) = 0
+        [Toggle(_USE_EMISSION)] _UseEmission ("Emission Texture", Float) = 0
         _EmissionMap ("Emission Texture", 2D) = "black" {}
         _EmissionColor ("Emission Color", Color) = (0.1,0.7,1,1)
         _EmissionStrength ("Emission Strength", Range(0,8)) = 1
@@ -64,31 +64,32 @@ Shader "Blueys/BlueShade"
         _ScrollSpeed ("Scroll Speed", Range(0,10)) = 0
         _ScrollDirection ("Scroll Direction", Range(0,360)) = 0
 
-        [Toggle] _UseReflection ("Fake Reflection", Float) = 0
+        [Toggle(_USE_REFLECTION)] _UseReflection ("Fake Reflection", Float) = 0
         _ReflectionColor ("Reflection Color", Color) = (0.7,0.95,1,1)
         _ReflectionStrength ("Reflection Strength", Range(0,3)) = 0.4
         _ReflectionPower ("Reflection Tightness", Range(0.5,10)) = 4
         _ReflectionMap ("Reflection Map", 2D) = "black" {}
         _ReflectionBlend ("Reflection Blend", Range(0,1)) = 0
 
-        [Toggle] _UseOutline ("Outline", Float) = 0
+        [Toggle(_USE_OUTLINE)] _UseOutline ("Outline", Float) = 0
         _OutlineColor ("Outline Color", Color) = (0,0,0,1)
         _OutlineWidth ("Outline Width", Range(0,0.1)) = 0
         _OutlineThreshold ("Outline Threshold", Range(0,1)) = 0.1
 
-        [Toggle] _UseDissolve ("Dissolve", Float) = 0
+        [Toggle(_USE_DISSOLVE)] _UseDissolve ("Dissolve", Float) = 0
         _DissolveAmount ("Dissolve Amount", Range(0,1)) = 0
         _DissolveEdgeWidth ("Dissolve Edge Width", Range(0,0.1)) = 0.05
         _DissolveEdgeColor ("Dissolve Edge Color", Color) = (1,0.5,0,1)
 
-        [Toggle] _UseMatcap ("Matcap", Float) = 0
+        [Toggle(_USE_MATCAP)] _UseMatcap ("Matcap", Float) = 0
         _MatcapTex ("Matcap", 2D) = "black" {}
         _MatcapStrength ("Matcap Strength", Range(0,1)) = 0
 
-        [Toggle] _UseGradient ("Gradient", Float) = 0
+        [Toggle(_USE_GRADIENT)] _UseGradient ("Gradient", Float) = 0
         _GradientTex ("Gradient Texture", 2D) = "white" {}
         _GradientStrength ("Gradient Strength", Range(0,1)) = 0
 
+        [Toggle(_USE_OCCLUSION)] _UseOcclusion ("Ambient Occlusion", Float) = 0
         _OcclusionMap ("Occlusion Map", 2D) = "white" {}
         _OcclusionStrength ("Occlusion Strength", Range(0,1)) = 1
 
@@ -126,6 +127,7 @@ Shader "Blueys/BlueShade"
         #pragma multi_compile _USE_DISSOLVE _USE_DISSOLVE_OFF
         #pragma multi_compile _USE_MATCAP _USE_MATCAP_OFF
         #pragma multi_compile _USE_GRADIENT _USE_GRADIENT_OFF
+        #pragma multi_compile _USE_OCCLUSION _USE_OCCLUSION_OFF
 
         sampler2D _MainTex;
         sampler2D _DetailTex;
@@ -257,23 +259,14 @@ Shader "Blueys/BlueShade"
             return lerp(fixed3(gray, gray, gray), c, v);
         }
 
-        fixed3 SharpnessAdjust(fixed3 c, half s, fixed3 blurred)
-        {
-            return lerp(blurred, c, 1.0 + s);
-        }
-
-        fixed3 ScrolledUV(fixed2 uv, half speed, half direction)
-        {
-            float rad = direction * 3.14159 / 180.0;
-            fixed2 dir = fixed2(cos(rad), sin(rad));
-            return tex2D(_MainTex, uv + dir * _Time.y * speed).rgb;
-        }
-
         void surf(Input IN, inout SurfaceOutputStandardSpecular o)
         {
-            fixed4 mainTex = tex2D(_MainTex, IN.uv_MainTex);
+            // 1. Main Texture & UV — main texture is the source of truth
+            fixed2 mainUV = IN.uv_MainTex * _MainTiling.xy + _MainOffset.xy;
+            fixed4 mainTex = tex2D(_MainTex, mainUV);
             fixed3 col = mainTex.rgb * _Color.rgb;
 
+            // 2. Texture Enhancement (respects main texture tint — no double-application)
             #if _USE_TEXTURE_BOOST
                 fixed3 boosted = mainTex.rgb;
                 boosted = ContrastAdjust(boosted, _Contrast);
@@ -282,15 +275,30 @@ Shader "Blueys/BlueShade"
                 boosted = HueRotate(boosted, _HueShift);
                 boosted = GammaAdjust(boosted, _Gamma);
                 boosted = VibranceAdjust(boosted, _Vibrance);
-                col = lerp(col, boosted * _Color.rgb * 2.0, _TextureStrength);
+                col = lerp(col, boosted * _Color.rgb, _TextureStrength);
+
+                // Sharpness — unsharp mask sampled from the main texture (source of truth).
+                // Accumulate in half precision to avoid fixed-range saturation.
+                if (_Sharpness > 0.001)
+                {
+                    half2 txs = _MainTex_TexelSize.xy;
+                    half3 blurred = half3(tex2D(_MainTex, mainUV + half2(txs.x, 0)).rgb)
+                                  + half3(tex2D(_MainTex, mainUV - half2(txs.x, 0)).rgb)
+                                  + half3(tex2D(_MainTex, mainUV + half2(0, txs.y)).rgb)
+                                  + half3(tex2D(_MainTex, mainUV - half2(0, txs.y)).rgb);
+                    blurred *= 0.25;
+                    col = lerp(blurred * _Color.rgb, col, 1.0 + _Sharpness);
+                }
             #endif
 
+            // 3. Detail Overlay
             #if _USE_DETAIL
                 fixed2 detailUV = IN.uv_MainTex * _DetailTiling + _DetailOffset.xy;
                 fixed3 detail = tex2D(_DetailTex, detailUV).rgb;
                 col *= lerp(fixed3(1,1,1), detail * 2.0, _DetailStrength);
             #endif
 
+            // 4. Normal Map
             #if _USE_NORMAL
                 fixed3 n = UnpackNormal(tex2D(_BumpMap, IN.uv_BumpMap));
                 o.Normal = lerp(fixed3(0,0,1), n, _BumpStrength);
@@ -298,50 +306,60 @@ Shader "Blueys/BlueShade"
 
             half fresnel = 1.0 - saturate(dot(normalize(IN.viewDir), o.Normal));
 
+            // 5. Deep Color
             #if _USE_DEPTH
                 col = lerp(col, _DepthColor.rgb, fresnel * _DepthStrength);
             #endif
 
             fixed3 emission = fixed3(0,0,0);
 
+            // 6. Edge Glow (Rim)
             #if _USE_EDGE_GLOW
                 half rim = pow(fresnel, _RimPower) * _RimStrength;
                 emission += _RimColor.rgb * rim;
             #endif
 
+            // 7. Inner Glow
             #if _USE_INNER_GLOW
                 half inner = pow(fresnel, _InnerPower) * _InnerStrength;
                 emission += _InnerColor.rgb * inner;
             #endif
 
+            // 8. Emission
             #if _USE_EMISSION
-                fixed3 e = tex2D(_EmissionMap, IN.uv_EmissionMap).rgb;
+                fixed2 emitUV = IN.uv_EmissionMap;
+                if (_ScrollSpeed > 0)
+                {
+                    float rad = _ScrollDirection * 3.14159 / 180.0;
+                    emitUV += fixed2(cos(rad), sin(rad)) * _Time.y * _ScrollSpeed;
+                }
+                fixed3 e = tex2D(_EmissionMap, emitUV).rgb;
                 e *= _EmissionColor.rgb * _EmissionStrength;
                 e *= _PulseSpeed > 0 ? _PulseMin + (1.0 - _PulseMin) * (0.5 + 0.5 * sin(_Time.y * _PulseSpeed * 6.28)) : 1.0;
                 e *= _FlickerSpeed > 0 ? 1.0 - _FlickerIntensity * (0.5 + 0.5 * sin(_Time.y * _FlickerSpeed * 6.28)) * (0.5 + 0.5 * sin(_Time.y * _FlickerSpeed * 12.56)) : 1.0;
-                fixed2 scrollUV = IN.uv_EmissionMap;
-                float rad = _ScrollDirection * 3.14159 / 180.0;
-                scrollUV += fixed2(cos(rad), sin(rad)) * _Time.y * _ScrollSpeed;
-                e *= tex2D(_EmissionMap, scrollUV).rgb;
                 emission += e;
             #endif
 
+            // 9. Fake Reflection
             #if _USE_REFLECTION
                 half refl = pow(fresnel, _ReflectionPower) * _ReflectionStrength;
                 fixed3 reflTex = tex2D(_ReflectionMap, IN.uv_ReflectionMap).rgb;
                 emission += _ReflectionColor.rgb * refl * lerp(fixed3(1,1,1), reflTex, _ReflectionBlend);
             #endif
 
+            // 10. Matcap
             #if _USE_MATCAP
                 half2 matcapUV = o.Normal.xy * 0.5 + 0.5;
                 emission += tex2D(_MatcapTex, matcapUV).rgb * _MatcapStrength;
             #endif
 
+            // 11. Gradient
             #if _USE_GRADIENT
                 fixed3 gradTex = tex2D(_GradientTex, IN.uv_MainTex).rgb;
                 emission += gradTex * gradTex.r * _GradientStrength;
             #endif
 
+            // 12. Dissolve (alpha sourced from the main texture)
             #if _USE_DISSOLVE
                 half dissolve = mainTex.a - _DissolveAmount;
                 clip(dissolve);
@@ -351,8 +369,10 @@ Shader "Blueys/BlueShade"
                 }
             #endif
 
+            // 13. Final Albedo
             o.Albedo = saturate(col);
 
+            // 14. Wet Shine (Metallic/Specular)
             #if _USE_WET_SHINE
                 half metallic = tex2D(_MetallicMap, IN.uv_MetallicMap).r * _MetallicStrength;
                 half smoothness = tex2D(_SmoothnessMap, IN.uv_SmoothnessMap).r * _SmoothnessStrength;
@@ -364,13 +384,16 @@ Shader "Blueys/BlueShade"
                 o.Specular.a = 0.5;
             #endif
 
+            // 15. Ambient Occlusion
             #if _USE_OCCLUSION
                 half occ = tex2D(_OcclusionMap, IN.uv_OcclusionMap).r;
                 o.Albedo *= lerp(1.0, occ, _OcclusionStrength);
             #endif
 
+            // 16. Final Emission
             o.Emission = emission * _FinalGlowPower;
 
+            // 17. Alpha (respects main texture transparency)
             #if _USE_OUTLINE
                 half edgeAlpha = fresnel * _OutlineWidth * 100.0;
                 o.Alpha = saturate(mainTex.a * _Color.a * _Alpha + edgeAlpha);

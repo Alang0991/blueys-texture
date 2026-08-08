@@ -7,12 +7,11 @@ namespace BlueShadeStudio.Modules
 {
     public class OptimizationModule : BaseModule
     {
-        public override string ModuleName => "Optimization";
-        public override int Order => 5;
-
         private bool perfOpen = true;
         private bool validationOpen = true;
         private bool textureInfoOpen = false;
+
+        protected override string[] ManagedProperties => new string[0];
 
         public override void Draw()
         {
@@ -23,7 +22,7 @@ namespace BlueShadeStudio.Modules
 
         void DrawPerformance()
         {
-            DrawSectionHeader(ref perfOpen, "Performance Information", false);
+            DrawSectionHeader(ref perfOpen, "Performance", false);
             if (perfOpen)
             {
                 DrawBodyStart();
@@ -40,11 +39,9 @@ namespace BlueShadeStudio.Modules
 
                 EditorGUILayout.Space(4);
                 Rect ratingRect = EditorGUILayout.GetControlRect(false, 24);
-                EditorGUI.DrawRect(ratingRect, ratingColor * 0.3f);
-                GUIStyle ratingStyle = new GUIStyle(EditorStyles.boldLabel);
-                ratingStyle.alignment = TextAnchor.MiddleCenter;
-                ratingStyle.normal.textColor = ratingColor;
-                GUI.Label(ratingRect, "Performance: " + perfRating, ratingStyle);
+                EditorGUI.DrawRect(ratingRect, ratingColor * 0.25f);
+                Theme.RatingStyle.normal.textColor = ratingColor;
+                GUI.Label(ratingRect, "Performance: " + perfRating, Theme.RatingStyle);
 
                 if (keywordCount > 5)
                 {
@@ -64,18 +61,38 @@ namespace BlueShadeStudio.Modules
                 DrawBodyStart();
 
                 List<string> warnings = new List<string>();
-                List<string> fixes = new List<string>();
+                List<string> fixProps = new List<string>();
 
                 if (material.GetTexture("_MainTex") == null)
                 {
                     warnings.Add("Main texture is missing.");
-                    fixes.Add("Assign a Main PNG Texture.");
+                    fixProps.Add(null);
+                }
+
+                string[] texProps = new string[]
+                {
+                    "_MainTex", "_DetailTex", "_BumpMap", "_EmissionMap",
+                    "_ReflectionMap", "_OcclusionMap", "_MetallicMap", "_SmoothnessMap",
+                    "_MatcapTex", "_GradientTex"
+                };
+
+                foreach (string prop in texProps)
+                {
+                    if (!material.HasProperty(prop)) continue;
+                    Texture tex = material.GetTexture(prop);
+                    if (tex == null) continue;
+
+                    if (!BlueShadeStudioUtils.IsValidTexture(tex, out string w))
+                    {
+                        warnings.Add($"\"{tex.name}\" ({prop}) has issues: {w}");
+                        fixProps.Add(prop);
+                    }
                 }
 
                 if (material.GetFloat("_UseEmission") > 0.5f && material.GetTexture("_EmissionMap") == null)
                 {
                     warnings.Add("Emission is enabled but no emission texture is assigned.");
-                    fixes.Add("Assign an emission texture or disable emission.");
+                    fixProps.Add(null);
                 }
 
                 if (warnings.Count == 0)
@@ -87,9 +104,27 @@ namespace BlueShadeStudio.Modules
                     for (int i = 0; i < warnings.Count; i++)
                     {
                         EditorGUILayout.HelpBox(warnings[i], MessageType.Warning);
-                        if (GUILayout.Button("Fix: " + fixes[i], Theme.GetButtonStyle()))
+                        if (fixProps[i] == null)
                         {
-                            ApplyFix(material, i);
+                             string buttonLabel = warnings[i].Contains("Emission") ? "Fix: Disable Emission" : "Fix: Assign Texture";
+                             if (GUILayout.Button(buttonLabel, Theme.ButtonStyle, GUILayout.Height(20)))
+                             {
+                                 if (warnings[i].Contains("Emission"))
+                                 {
+                                     material.SetFloat("_UseEmission", 0f);
+                                     material.DisableKeyword(BlueShadeStudioUtils.TogglePropertyToKeyword("_UseEmission"));
+                                 }
+                                 EditorUtility.SetDirty(material);
+                             }
+                        }
+                        else
+                        {
+                            Texture tex = material.GetTexture(fixProps[i]);
+                            if (GUILayout.Button($"Auto-fix \"{tex?.name}\"", Theme.ButtonStyle, GUILayout.Height(20)))
+                            {
+                                if (tex != null)
+                                    BlueShadeStudioUtils.ApplyFixTexture(tex);
+                            }
                         }
                     }
                 }
@@ -124,6 +159,7 @@ namespace BlueShadeStudio.Modules
                     EditorGUILayout.LabelField("Resolution", tex.width + " x " + tex.height);
                     EditorGUILayout.LabelField("Type", tex.GetType().Name);
                     EditorGUILayout.LabelField("VRAM", BlueShadeStudioUtils.FormatVRAM(tex));
+                    EditorGUILayout.LabelField("Details", BlueShadeStudioUtils.GetTextureInfo(tex));
                     EditorGUI.indentLevel--;
                     EditorGUILayout.Space(4);
                 }
@@ -145,29 +181,34 @@ namespace BlueShadeStudio.Modules
             if (material.IsKeywordEnabled("_USE_INNER_GLOW")) count++;
             if (material.IsKeywordEnabled("_USE_EMISSION")) count++;
             if (material.IsKeywordEnabled("_USE_REFLECTION")) count++;
+            if (material.IsKeywordEnabled("_USE_OUTLINE")) count++;
+            if (material.IsKeywordEnabled("_USE_DISSOLVE")) count++;
             if (material.IsKeywordEnabled("_USE_MATCAP")) count++;
             if (material.IsKeywordEnabled("_USE_GRADIENT")) count++;
-            if (material.IsKeywordEnabled("_USE_DISSOLVE")) count++;
-            if (material.IsKeywordEnabled("_USE_OUTLINE")) count++;
+            if (material.IsKeywordEnabled("_USE_OCCLUSION")) count++;
+            if (material.IsKeywordEnabled("_USE_METALLIC_MAP")) count++;
+            if (material.IsKeywordEnabled("_USE_SMOOTHNESS_MAP")) count++;
             if (material.IsKeywordEnabled("_USE_SOLID_OVERLAY")) count++;
             if (material.IsKeywordEnabled("_USE_RIM_GLOW")) count++;
             if (material.IsKeywordEnabled("_USE_CUTOUT")) count++;
             return count;
         }
 
-        void ApplyFix(Material mat, int index)
+        public override void LoadSectionStates(string prefix)
         {
-            switch (index)
-            {
-                case 0:
-                    EditorUtility.DisplayDialog("Fix Required", "Please assign a main texture manually.", "OK");
-                    break;
-                case 1:
-                    mat.SetFloat("_UseEmission", 0);
-                    EditorUtility.SetDirty(mat);
-                    break;
-            }
+            perfOpen = State.GetBool(prefix + "perfOpen", true);
+            validationOpen = State.GetBool(prefix + "validationOpen", true);
+            textureInfoOpen = State.GetBool(prefix + "textureInfoOpen", false);
         }
+
+        public override void SaveSectionStates(string prefix)
+        {
+            State.SetBool(prefix + "perfOpen", perfOpen);
+            State.SetBool(prefix + "validationOpen", validationOpen);
+            State.SetBool(prefix + "textureInfoOpen", textureInfoOpen);
+        }
+
+        public override void ResetValues() { }
 
         protected override string GetTooltip(string propName)
         {

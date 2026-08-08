@@ -6,12 +6,18 @@ namespace BlueShadeStudio.Modules
 {
     public class RenderingModule : BaseModule
     {
-        public override string ModuleName => "Rendering";
-        public override int Order => 3;
-
         private bool renderOpen = true;
+        private bool cullOpen = true;
+
+        protected override string[] ManagedProperties => new[] { "_Cull" };
 
         public override void Draw()
+        {
+            DrawRenderingInfo();
+            DrawCullSettings();
+        }
+
+        void DrawRenderingInfo()
         {
             DrawSectionHeader(ref renderOpen, "Rendering Settings", false);
             if (renderOpen)
@@ -19,9 +25,10 @@ namespace BlueShadeStudio.Modules
                 DrawBodyStart();
                 EditorGUI.indentLevel++;
 
-                EditorGUILayout.LabelField("Render Queue", material.renderQueue.ToString());
+                EditorGUILayout.LabelField("Queue", material.renderQueue.ToString(), EditorStyles.wordWrappedLabel);
                 EditorGUILayout.LabelField("Render Type", material.GetTag("RenderType", false, "Unknown"));
                 EditorGUILayout.LabelField("Shader", material.shader.name);
+
                 EditorGUILayout.Space(8);
 
                 EditorGUI.BeginChangeCheck();
@@ -32,16 +39,28 @@ namespace BlueShadeStudio.Modules
                     EditorUtility.SetDirty(material);
                 }
 
-                if (material.HasProperty("_Cull"))
+                EditorGUI.indentLevel--;
+                EditorGUILayout.EndVertical();
+            }
+            EditorGUILayout.Space(Theme.SectionSpacing);
+        }
+
+        void DrawCullSettings()
+        {
+            if (!material.HasProperty("_Cull")) return;
+            DrawSectionHeader(ref cullOpen, "Culling", false);
+            if (cullOpen)
+            {
+                DrawBodyStart();
+                EditorGUI.indentLevel++;
+
+                EditorGUI.BeginChangeCheck();
+                int cull = (int)material.GetFloat("_Cull");
+                int newCull = EditorGUILayout.Popup("Cull Mode", cull, new[] { "Off (Double Sided)", "Front", "Back" });
+                if (EditorGUI.EndChangeCheck())
                 {
-                    EditorGUI.BeginChangeCheck();
-                    bool doubleSided = material.GetFloat("_Cull") == 0;
-                    bool newDoubleSided = EditorGUILayout.Toggle("Double Sided", doubleSided);
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        material.SetFloat("_Cull", newDoubleSided ? 0f : 2f);
-                        EditorUtility.SetDirty(material);
-                    }
+                    material.SetFloat("_Cull", newCull);
+                    EditorUtility.SetDirty(material);
                 }
 
                 EditorGUI.indentLevel--;
@@ -50,9 +69,32 @@ namespace BlueShadeStudio.Modules
             EditorGUILayout.Space(Theme.SectionSpacing);
         }
 
+        public override void LoadSectionStates(string prefix)
+        {
+            renderOpen = State.GetBool(prefix + "renderOpen", true);
+            cullOpen = State.GetBool(prefix + "cullOpen", true);
+        }
+
+        public override void SaveSectionStates(string prefix)
+        {
+            State.SetBool(prefix + "renderOpen", renderOpen);
+            State.SetBool(prefix + "cullOpen", cullOpen);
+        }
+
+        public override void ResetValues()
+        {
+            if (material.HasProperty("_Cull"))
+                material.SetFloat("_Cull", 2f);
+            EditorUtility.SetDirty(material);
+        }
+
         protected override string GetTooltip(string propName)
         {
-            return string.Empty;
+            switch (propName)
+            {
+                case "_Cull": return "Controls which faces are culled. Off = double-sided, Front = cull front faces, Back = cull back faces.";
+                default: return string.Empty;
+            }
         }
     }
 }

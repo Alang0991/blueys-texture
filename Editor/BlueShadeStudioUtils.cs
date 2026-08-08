@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 public static class BlueShadeStudioUtils
 {
@@ -76,6 +77,30 @@ public static class BlueShadeStudioUtils
         AssetDatabase.ImportAsset(path);
     }
 
+    public static string GetTextureWarning(Texture tex)
+    {
+        if (tex == null) return null;
+
+        string path = AssetDatabase.GetAssetPath(tex);
+        if (string.IsNullOrEmpty(path))
+            return "Texture is not from the project.\n\nThis may cause issues with texture quality.";
+
+        TextureImporter imp = AssetImporter.GetAtPath(path) as TextureImporter;
+        if (imp == null) return null;
+
+        List<string> issues = new List<string>();
+
+        if (!imp.mipmapEnabled)
+            issues.Add("Mipmaps are disabled — enable for better quality at distance.");
+
+        if (imp.wrapMode != TextureWrapMode.Repeat)
+            issues.Add("Wrap mode is not Repeat — set to Repeat for proper tiling.");
+
+        if (issues.Count == 0) return null;
+
+        return string.Join("\n\n", issues);
+    }
+
     public static string GetPerformanceRating(int keywordCount)
     {
         if (keywordCount <= 3) return "Low (Good for VRChat)";
@@ -109,25 +134,36 @@ public static class BlueShadeStudioUtils
         return mat.IsKeywordEnabled(keyword);
     }
 
-    public static string SavePresetToJson(Dictionary<string, object> settings)
+    public static string TogglePropertyToKeyword(string propertyName)
     {
-        return JsonUtility.ToJson(new PresetWrapper(settings));
-    }
-
-    public static Dictionary<string, object> LoadPresetFromJson(string json)
-    {
-        PresetWrapper wrapper = JsonUtility.FromJson<PresetWrapper>(json);
-        return wrapper != null ? wrapper.settings : new Dictionary<string, object>();
-    }
-
-    [System.Serializable]
-    private class PresetWrapper
-    {
-        public Dictionary<string, object> settings;
-
-        public PresetWrapper(Dictionary<string, object> s)
+        if (string.IsNullOrEmpty(propertyName)) return propertyName;
+        var sb = new StringBuilder(propertyName.Length + 2);
+        for (int i = 0; i < propertyName.Length; i++)
         {
-            settings = s;
+            char c = propertyName[i];
+            if (char.IsUpper(c) && i > 0)
+            {
+                char prev = propertyName[i - 1];
+                if (prev != '_' && !char.IsUpper(prev) && !char.IsDigit(prev))
+                    sb.Append('_');
+            }
+            sb.Append(char.ToUpperInvariant(c));
+        }
+        return sb.ToString();
+    }
+
+    public static void SyncMaterialKeywords(Material mat)
+    {
+        if (mat == null || mat.shader == null) return;
+        foreach (string prop in BlueShadeStudioDefine.ToggleProperties)
+        {
+            if (!mat.HasProperty(prop)) continue;
+            string keyword = TogglePropertyToKeyword(prop);
+            bool on = mat.GetFloat(prop) > 0.5f;
+            if (on)
+                mat.EnableKeyword(keyword);
+            else
+                mat.DisableKeyword(keyword);
         }
     }
 }
