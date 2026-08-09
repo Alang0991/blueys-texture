@@ -130,7 +130,7 @@ public static class BlueShadeStudioPresetManager
         for (int i = 0; i < propCount; i++)
         {
             string name = shader.GetPropertyName(i);
-            UnityEngine.Rendering.ShaderPropertyType type = shader.GetPropertyType(name);
+            UnityEngine.Rendering.ShaderPropertyType type = shader.GetPropertyType(i);
 
             switch (type)
             {
@@ -150,7 +150,7 @@ public static class BlueShadeStudioPresetManager
             }
         }
 
-        string json = BlueShadeStudioUtils.SavePresetToJson(settings);
+        string json = SavePresetToJson(settings);
 
         int slot = FindEmptySlot();
         if (slot < 0)
@@ -200,7 +200,7 @@ public static class BlueShadeStudioPresetManager
         // from the (now default) toggle float values.
         BlueShadeStudioUtils.SyncMaterialKeywords(mat);
 
-        Object.DestroyImmediate(defaultMat);
+        UnityEngine.Object.DestroyImmediate(defaultMat);
         EditorUtility.SetDirty(mat);
     }
 
@@ -217,7 +217,7 @@ public static class BlueShadeStudioPresetManager
         for (int i = 0; i < propCount; i++)
         {
             string name = shader.GetPropertyName(i);
-            UnityEngine.Rendering.ShaderPropertyType type = shader.GetPropertyType(name);
+            UnityEngine.Rendering.ShaderPropertyType type = shader.GetPropertyType(i);
 
             switch (type)
             {

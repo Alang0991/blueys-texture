@@ -218,7 +218,13 @@ namespace BlueShadeStudio.Modules
 
         protected MaterialProperty FindProperty(string name)
         {
-            return MaterialEditor.GetMaterialProperty(props, name);
+            if (props == null) return null;
+            foreach (var prop in props)
+            {
+                if (prop != null && prop.name == name)
+                    return prop;
+            }
+            return null;
         }
 
         protected virtual string GetTooltip(string propName)

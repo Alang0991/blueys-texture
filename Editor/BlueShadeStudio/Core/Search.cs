@@ -34,7 +34,7 @@ namespace BlueShadeStudio.Core
             for (int i = 0; i < propCount; i++)
             {
                 string name = shader.GetPropertyName(i);
-                string displayName = shader.GetPropertyDisplayName(i);
+                string displayName = name;
                 if (IsPropertyVisible(name, displayName, query, advancedMode))
                 {
                     visibleProps.Add(name);

@@ -142,6 +142,9 @@ Shader "Blueys/BlueShade"
 
         fixed4 _Color;
         half _Alpha;
+        float4 _MainTiling;
+        float4 _MainOffset;
+        half4 _MainTex_TexelSize;
 
         half _TextureStrength;
         half _Contrast;

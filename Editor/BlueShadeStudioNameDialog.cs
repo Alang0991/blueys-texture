@@ -16,7 +16,7 @@ public class BlueShadeStudioNameDialog : EditorWindow
         window.input = defaultText;
         window.message = dialogMessage;
         window.ShowPopup();
-        window.FocusWindowIfItsOpen();
+        window.FocusWindowIfItsOpen<BlueShadeStudioNameDialog>();
         return Result;
     }
 

@@ -100,6 +100,7 @@ Shader "Blueys/BlueShade Lite"
         fixed4 _Color;
         float4 _MainTiling;
         float4 _MainOffset;
+        half4 _MainTex_TexelSize;
 
         half _Brightness;
         half _Contrast;

@@ -49,6 +49,28 @@ namespace BlueShadeStudio.Core
         public static readonly Color TagText = new Color(0.70f, 0.70f, 0.73f);
         public static readonly Color TexturePreviewBg = new Color(0.08f, 0.08f, 0.10f);
 
+        private static Texture2D _whiteTex;
+        private static Texture2D WhiteTex
+        {
+            get
+            {
+                if (_whiteTex == null)
+                {
+                    _whiteTex = new Texture2D(1, 1);
+                    _whiteTex.hideFlags = HideFlags.HideAndDontSave;
+                }
+                return _whiteTex;
+            }
+        }
+
+        static void SetBackgroundColor(GUIStyle style, GUIStyleState state, Color color)
+        {
+            if (style == null) return;
+            WhiteTex.SetPixel(0, 0, color);
+            WhiteTex.Apply(false, true);
+            state.background = WhiteTex;
+        }
+
         // ========================================
         // Layout constants
         // ========================================
@@ -174,7 +196,7 @@ namespace BlueShadeStudio.Core
             BoxStyle = new GUIStyle("box");
             BoxStyle.padding = new RectOffset(12, 12, 10, 10);
             BoxStyle.margin = new RectOffset(0, 0, 0, 0);
-            BoxStyle.normal.backgroundColor = Body;
+            SetBackgroundColor(BoxStyle, BoxStyle.normal, Body);
             BoxStyle.border = new RectOffset(1, 1, 1, 1);
 
             // Button
@@ -185,18 +207,18 @@ namespace BlueShadeStudio.Core
             ButtonStyle.alignment = TextAnchor.MiddleCenter;
             ButtonStyle.fontStyle = FontStyle.Bold;
             ButtonStyle.normal.textColor = TextPrimary;
-            ButtonStyle.normal.backgroundColor = BodyLight;
+            SetBackgroundColor(ButtonStyle, ButtonStyle.normal, BodyLight);
             ButtonStyle.hover.textColor = Accent;
-            ButtonStyle.hover.backgroundColor = BodyLighter;
+            SetBackgroundColor(ButtonStyle, ButtonStyle.hover, BodyLighter);
             ButtonStyle.active.textColor = Accent;
-            ButtonStyle.active.backgroundColor = HeaderOn;
+            SetBackgroundColor(ButtonStyle, ButtonStyle.active, HeaderOn);
             ButtonStyle.focused.textColor = Accent;
             ButtonStyle.border = new RectOffset(8, 8, 4, 4);
 
             // Button hover (for custom drawing)
             ButtonHoverStyle = new GUIStyle(ButtonStyle);
             ButtonHoverStyle.normal.textColor = Accent;
-            ButtonHoverStyle.normal.backgroundColor = AccentSoft;
+            SetBackgroundColor(ButtonHoverStyle, ButtonHoverStyle.normal, AccentSoft);
 
             // Small button
             SmallButtonStyle = new GUIStyle(ButtonStyle);
@@ -248,7 +270,7 @@ namespace BlueShadeStudio.Core
 
             // Texture preview
             TexturePreviewStyle = new GUIStyle("box");
-            TexturePreviewStyle.normal.backgroundColor = TexturePreviewBg;
+            SetBackgroundColor(TexturePreviewStyle, TexturePreviewStyle.normal, TexturePreviewBg);
             TexturePreviewStyle.border = new RectOffset(1, 1, 1, 1);
             TexturePreviewStyle.margin = new RectOffset(0, 0, 0, 0);
             TexturePreviewStyle.padding = new RectOffset(2, 2, 2, 2);
