@@ -180,12 +180,8 @@ namespace BlueShadeStudio.Modules
             {
                 Undo.RecordObject(material, content.text);
                 EditorUtility.SetDirty(material);
-            }
-
-            // Show texture preview for main texture
-            if (prop.textureValue != null && (prop.name == "_MainTex" || prop.name == "_EmissionMap"))
-            {
-                DrawTexturePreview(prop.textureValue);
+                SceneView.RepaintAll();
+                editor.Repaint();
             }
         }
 

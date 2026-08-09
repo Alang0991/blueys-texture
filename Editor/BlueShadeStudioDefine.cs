@@ -5,7 +5,7 @@ public static class BlueShadeStudioDefine
     public const string PackageName = "com.blueys.texture";
     public const string ShaderName = "Blueys/BlueShade";
     public const string SimpleShaderName = "Blueys/BlueShade Lite";
-    public const string Version = "1.2.2";
+    public const string Version = "1.2.3";
 
     public static readonly Color AccentColor = new Color(0.25f, 0.82f, 1f);
     public static readonly Color HeaderOffColor = new Color(0.17f, 0.17f, 0.19f);

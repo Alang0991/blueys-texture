@@ -112,7 +112,7 @@ namespace BlueShadeStudio.Modules
         {
             switch (propName)
             {
-                case "_MainTex": return "The main image texture — the foundation of the material. All effects build on top of this.";
+                case "_MainTex": return "The main PNG texture — the foundation of the material. All effects build on top of this.";
                 case "_Color": return "Tint colour applied multiplicatively to the main texture.";
                 case "_MainTiling": return "Tiling (scale) of the main texture UVs.";
                 case "_MainOffset": return "Offset (translation) of the main texture UVs.";

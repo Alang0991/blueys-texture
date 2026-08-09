@@ -4,10 +4,10 @@ Shader "Blueys/BlueShade"
     {
         [HideInInspector] _Cull ("Cull", Float) = 2
 
-        _MainTex ("Main Image Texture", 2D) = "white" {}
+        _MainTex ("Main PNG Texture", 2D) = "white" {}
         _MainTiling ("Main Tiling", Vector) = (1,1,0,0)
         _MainOffset ("Main Offset", Vector) = (0,0,0,0)
-        _Color ("Texture Tint", Color) = (1,1,1,1)
+        _Color ("Tint", Color) = (1,1,1,1)
         _Alpha ("Transparency", Range(0,1)) = 1
 
         [Toggle(_USE_TEXTURE_BOOST)] _UseTextureBoost ("Texture Enhancement", Float) = 0
