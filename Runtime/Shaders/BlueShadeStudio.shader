@@ -381,10 +381,10 @@ Shader "Blueys/BlueShade"
                 half smoothness = tex2D(_SmoothnessMap, IN.uv_SmoothnessMap).r * _SmoothnessStrength;
                 half finalSmoothness = lerp(_Smoothness, smoothness, _SmoothnessStrength);
                 o.Specular = fixed3(metallic, metallic, metallic);
-                o.Specular.a = finalSmoothness;
+                o.Smoothness = finalSmoothness;
             #else
                 o.Specular = fixed3(0, 0, 0);
-                o.Specular.a = 0.5;
+                o.Smoothness = 0.5;
             #endif
 
             // 15. Ambient Occlusion
